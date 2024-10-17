@@ -1,0 +1,10 @@
+.feedPage {
+  width: 100%;
+  position: relative;
+  background-color: var(--website-background);
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: flex-start;
+  line-height: normal;
+  letter-spacing: normal;
+}

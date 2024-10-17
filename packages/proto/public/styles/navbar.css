@@ -1,0 +1,15 @@
+.navbar {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+}
+
+.nav-link:hover {
+  background-color: var(--nav-hover, #365899);
+  border-radius: 4px;
+}

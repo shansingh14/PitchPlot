@@ -1,0 +1,51 @@
+.profilePage {
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+  padding: 1rem;
+  background-color: var(--color-background, #f0f0f0);
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.profilePic {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.profileName {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+}
+
+.profileBio {
+  font-family: var(--font-body);
+  color: #555;
+  margin-top: 0.5rem;
+}
+
+.recentActivity {
+  margin-top: 2rem;
+}
+
+.activityList {
+  list-style-type: none;
+  padding: 0;
+}
+
+.activityList li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ddd;
+}

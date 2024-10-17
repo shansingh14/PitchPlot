@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feed Page with Images</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/reset.css">
+  <link rel="stylesheet" href="/styles/page.css">
+  <link rel="stylesheet" href="/styles/feedContent.css">
+  <link rel="stylesheet" href="/styles/navbar.css">
+  <link rel="stylesheet" href="/styles/header.css">
+</head>
+<body>
+ <header class="header">
+  <div class="headerInner">
+    <div class="logo">YourApp</div>
+    <nav class="navbar">
+      <a href="/profile.html" class="nav-link">Profile</a>  
+      <a href="/index.html" class="nav-link">Feed</a>        
+      <a href="/friends.html" class="nav-link">Find Friends</a>  
+    </nav>
+  </div>
+</header>
+
+  <main class="feedPage">
+    <section class="feedContent">
+
+      <article class="post">
+        <div class="user">
+          <img src="/images/billie-album.jpeg" alt="User profile" class="userIcon">
+          <div class="userInfo">
+            <span class="userName">Alice</span>
+            <span class="postTime">1 hour ago</span>
+          </div>
+        </div>
+        <p class="postText">Beautiful album</p>
+        <div class="postImageContainer">
+          <img src="/images/billie-album.jpeg" alt="Post Image" class="postImage">
+        </div>
+        <div class="postFooter">
+          <button class="likeBtn">Like</button>
+          <button class="commentBtn">Comment</button>
+        </div>
+      </article>
+
+
+      <article class="post">
+        <div class="user">
+          <img src="/images/billie-album.jpeg" alt="User profile" class="userIcon">
+          <div class="userInfo">
+            <span class="userName">Bob</span>
+            <span class="postTime">3 hours ago</span>
+          </div>
+        </div>
+        <p class="postText">what a great album!</p>
+        <div class="postImageContainer">
+          <img src="/images/billie-album.jpeg" alt="Post Image" class="postImage">
+        </div>
+        <div class="postFooter">
+          <button class="likeBtn">Like</button>
+          <button class="commentBtn">Comment</button>
+        </div>
+      </article>
+      
+      <article class="post">
+        <div class="user">
+          <img src="/images/billie-album.jpeg" alt="User profile" class="userIcon">
+          <div class="userInfo">
+            <span class="userName">Charlie</span>
+            <span class="postTime">5 hours ago</span>
+          </div>
+        </div>
+        <p class="postText">Check out this cool album!</p>
+        <div class="postImageContainer">
+          <img src="/images/billie-album.jpeg" alt="Post Image" class="postImage">
+        </div>
+        <div class="postFooter">
+          <button class="likeBtn">Like</button>
+          <button class="commentBtn">Comment</button>
+        </div>
+      </article>
+
+    </section>
+  </main>
+
+  <script src="/scripts/main.js"></script>
+</body>
+</html>
