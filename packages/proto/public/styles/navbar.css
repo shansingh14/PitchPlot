@@ -1,15 +1,36 @@
 .navbar {
+  position: fixed;
+  justify-content: flex-end;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 10px 0;
+}
+
+.navbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
-  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
 }
 
 .nav-link {
-  color: white;
   text-decoration: none;
-  padding: 0.5rem 1rem;
+  justify-content: flex-end;
+  color: #333;
+  margin-left: 20px;
+  font-weight: bold;
 }
 
-.nav-link:hover {
-  background-color: var(--nav-hover, #365899);
-  border-radius: 4px;
+.nav-link.active {
+  color: #4267B2;
+}
+
+.feedContent {
+  margin-top: 60px; 
 }

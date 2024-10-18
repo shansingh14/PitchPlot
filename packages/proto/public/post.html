@@ -23,6 +23,36 @@
     </article>
   </main>
 
-  <script src="/scripts/main.js"></script>
+  <article class="post">
+  <div class="userInfo">
+    <p class="userName">John Doe</p>
+    <p class="postText">This is a sample post.</p>
+  </div>
+  
+  <div class="commentsSection">
+    <h4>Comments</h4>
+    <div class="commentsList">
+    </div>
+    <textarea placeholder="Add a comment..." class="commentInput"></textarea>
+    <button class="commentSubmit">Comment</button>
+  </div>
+</article>
+
+
+<script>
+  document.querySelectorAll(".commentSubmit").forEach(button => {
+    button.addEventListener("click", function() {
+      var commentText = this.previousElementSibling.value;
+      if (commentText.trim() !== "") {
+        var commentElement = document.createElement("p");
+        commentElement.classList.add("comment");
+        commentElement.innerText = commentText;
+        this.previousElementSibling.value = ""; 
+
+        this.parentNode.querySelector(".commentsList").appendChild(commentElement);
+      }
+    });
+  });
+</script>
 </body>
 </html>
