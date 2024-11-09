@@ -26,49 +26,26 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var userProfilePage_exports = {};
-__export(userProfilePage_exports, {
-  UserProfilePage: () => UserProfilePage
+var mongo_exports = {};
+__export(mongo_exports, {
+  connect: () => connect
 });
-module.exports = __toCommonJS(userProfilePage_exports);
-var import_server = require("@calpoly/mustang/server");
-var import_renderPage = __toESM(require("./renderPage"));
-class UserProfilePage {
-  static render(data) {
-    return (0, import_renderPage.default)({
-      body: this.renderBody(data),
-      stylesheets: ["/styles/profile.css"],
-      scripts: ["/scripts/user-post.js"]
-    });
+module.exports = __toCommonJS(mongo_exports);
+var import_mongoose = __toESM(require("mongoose"));
+var import_dotenv = __toESM(require("dotenv"));
+import_dotenv.default.config();
+function getMongoURI(dbname) {
+  let connection_string = `mongodb://localhost:27017/${dbname}`;
+  const { MONGO_USER, MONGO_PWD, MONGO_CLUSTER } = process.env;
+  if (MONGO_USER && MONGO_PWD && MONGO_CLUSTER) {
+    connection_string = `mongodb+srv://${MONGO_USER}:${MONGO_PWD}@${MONGO_CLUSTER}/${dbname}?retryWrites=true&w=majority`;
   }
-  static renderBody({ user, posts }) {
-    return import_server.html`
-      <main class="profile-page">
-        <section class="user-info">
-          <h1>${user.username}</h1>
-          <p>${user.bio}</p>
-          <p>Joined: ${user.createdAt.toDateString()}</p>
-        </section>
-
-        <section class="user-posts">
-          <h2>${user.username}'s Posts</h2>
-          ${posts.length > 0 ? posts.map((post) => this.renderPost(post)) : import_server.html`<p>No posts yet.</p>`}
-        </section>
-      </main>
-    `;
-  }
-  static renderPost(post) {
-    return import_server.html`
-      <article class="post">
-        <h3>${post.id}</h3>
-        <p>${post.content}</p>
-        <p>Posted on: ${post.createdAt.toDateString()}</p>
-        <p>${post.likesCount} Likes, ${post.comments.length} Comments</p>
-      </article>
-    `;
-  }
+  return connection_string;
+}
+function connect(dbname) {
+  import_mongoose.default.connect(getMongoURI(dbname)).catch((error) => console.error(error));
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  UserProfilePage
+  connect
 });

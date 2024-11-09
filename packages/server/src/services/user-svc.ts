@@ -1,58 +1,38 @@
-
+import { Schema, model } from "mongoose";
 import { User } from "../models/user";
 
-const users: User[] = []; 
+const UserSchema = new Schema<User>(
+  {
+    username: { type: String, required: true, unique: true },
+    email: { type: String, required: true },
+    passwordHash: { type: String, required: true },
+    profilePic: { type: String },
+    bio: { type: String },
+    createdAt: { type: Date, default: Date.now },
+  },
+  { collection: "users" }
+);
 
-export function createUser(user: User): void {
-  users.push(user);
+const UserModel = model<User>("User", UserSchema);
+
+export async function getAllUsers() {
+  return UserModel.find();
 }
 
-export function getUser(id: string): User | undefined {
-  return users.find((user) => user.id === id);
+export async function getUserById(id: string) {
+  return UserModel.findById(id);
 }
 
-export function getAllUsers(): User[] {
-  return users;
+export async function addUser(user: User) {
+  return UserModel.create(user);
 }
 
-
-export function followUser(userId: string, followId: string): void {
-  const user = getUser(userId);
-  const followUser = getUser(followId);
-
-  if (user && followUser && !user.following.includes(followId)) {
-    user.following.push(followId);
-    followUser.followers.push(userId);
-  }
+export async function updateUser(id: string, update: Partial<User>) {
+  return UserModel.findByIdAndUpdate(id, update, { new: true });
 }
 
-
-export function unfollowUser(userId: string, unfollowId: string): void {
-  const user = getUser(userId);
-  const unfollowUser = getUser(unfollowId);
-
-  if (user && unfollowUser) {
-    user.following = user.following.filter((id) => id !== unfollowId);
-    unfollowUser.followers = unfollowUser.followers.filter(
-      (id) => id !== userId
-    );
-  }
+export async function deleteUser(id: string) {
+  return UserModel.findByIdAndDelete(id);
 }
 
-export function updateUser(id: string, updatedUser: Partial<User>): boolean {
-  const user = getUser(id);
-  if (user) {
-    Object.assign(user, updatedUser);
-    return true;
-  }
-  return false;
-}
-
-export function deleteUser(id: string): boolean {
-  const index = users.findIndex((user) => user.id === id);
-  if (index !== -1) {
-    users.splice(index, 1);
-    return true;
-  }
-  return false;
-}
+export default { getAllUsers, getUserById, addUser, updateUser, deleteUser };

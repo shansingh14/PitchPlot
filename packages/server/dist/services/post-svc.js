@@ -18,72 +18,58 @@ var __copyProps = (to, from, except, desc) => {
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var post_svc_exports = {};
 __export(post_svc_exports, {
-  createPost: () => createPost,
+  addPost: () => addPost,
+  default: () => post_svc_default,
   deletePost: () => deletePost,
   getAllPosts: () => getAllPosts,
-  getFeed: () => getFeed,
-  getPost: () => getPost,
+  getPostById: () => getPostById,
   getUserPosts: () => getUserPosts,
-  likePost: () => likePost,
-  unlikePost: () => unlikePost,
   updatePost: () => updatePost
 });
 module.exports = __toCommonJS(post_svc_exports);
-const posts = [];
-function createPost(post) {
-  posts.push(post);
+var import_mongoose = require("mongoose");
+const PostSchema = new import_mongoose.Schema(
+  {
+    content: { type: String, required: true },
+    image: { type: String, default: "" },
+    userId: {
+      type: import_mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    createdAt: { type: Date, default: Date.now },
+    likesCount: { type: Number, default: 0 },
+    comments: [{ type: import_mongoose.Schema.Types.ObjectId, ref: "Comment" }]
+    // Updated comments type
+  },
+  { collection: "posts" }
+);
+const PostModel = (0, import_mongoose.model)("Post", PostSchema);
+async function getAllPosts() {
+  return PostModel.find();
 }
-function getPost(id) {
-  return posts.find((post) => post.id === id);
+async function getPostById(id) {
+  return PostModel.findById(id);
 }
-function getFeed(userId, following) {
-  return posts.filter((post) => following.includes(post.userId));
+async function addPost(post) {
+  return PostModel.create(post);
+}
+async function updatePost(id, update) {
+  return PostModel.findByIdAndUpdate(id, update, { new: true });
+}
+async function deletePost(id) {
+  return PostModel.findByIdAndDelete(id);
 }
 function getUserPosts(userId) {
-  return posts.filter((post) => post.userId === userId);
+  return PostModel.find({ userId }).exec();
 }
-function getAllPosts() {
-  return posts;
-}
-function likePost(postId, userId) {
-  const post = getPost(postId);
-  if (post && !post.likedBy.includes(userId)) {
-    post.likedBy.push(userId);
-    post.likesCount++;
-  }
-}
-function unlikePost(postId, userId) {
-  const post = getPost(postId);
-  if (post && post.likedBy.includes(userId)) {
-    post.likedBy = post.likedBy.filter((id) => id !== userId);
-    post.likesCount--;
-  }
-}
-function updatePost(id, updatedPost) {
-  const post = getPost(id);
-  if (post) {
-    Object.assign(post, updatedPost);
-    return true;
-  }
-  return false;
-}
-function deletePost(id) {
-  const index = posts.findIndex((post) => post.id === id);
-  if (index !== -1) {
-    posts.splice(index, 1);
-    return true;
-  }
-  return false;
-}
+var post_svc_default = { getAllPosts, getPostById, addPost, updatePost, deletePost, getUserPosts };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  createPost,
+  addPost,
   deletePost,
   getAllPosts,
-  getFeed,
-  getPost,
+  getPostById,
   getUserPosts,
-  likePost,
-  unlikePost,
   updatePost
 });

@@ -4,7 +4,7 @@ import { PageParts, renderWithDefaults } from "@calpoly/mustang/server";
 const defaults = {
   stylesheets: [
     "/styles/reset.css",
-    "/styles/tokens.css",
+    "/styles/token.css",
     "/styles/page.css",
     "/styles/profile.css",
     "/styles/navbar.css",

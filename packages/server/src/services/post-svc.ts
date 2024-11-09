@@ -1,64 +1,47 @@
-
+import { Schema, model, Document, Types } from "mongoose";
 import { Post } from "../models/post";
 
-const posts: Post[] = []; 
+// Define Post schema with ObjectId types for creatorId and comments
+const PostSchema = new Schema<Post>(
+  {
+    content: { type: String, required: true },
+    image: { type: String, default: "" },
+    userId: {
+      type: Schema.Types.ObjectId as any,
+      ref: "User",
+      required: true,
+    },
+    createdAt: { type: Date, default: Date.now },
+    likesCount: { type: Number, default: 0 },
+    comments: [{ type: Schema.Types.ObjectId as any, ref: "Comment" }], // Updated comments type
+  },
+  { collection: "posts" }
+);
 
+const PostModel = model<Post>("Post", PostSchema);
 
-export function createPost(post: Post): void {
-  posts.push(post);
+export async function getAllPosts() {
+  return PostModel.find();
 }
 
-
-export function getPost(id: string): Post | undefined {
-  return posts.find((post) => post.id === id);
+export async function getPostById(id: string) {
+  return PostModel.findById(id);
 }
 
-
-export function getFeed(userId: string, following: string[]): Post[] {
-  return posts.filter((post) => following.includes(post.userId));
+export async function addPost(post: Post) {
+  return PostModel.create(post);
 }
 
-export function getUserPosts(userId: string): Post[] {
-  return posts.filter((post) => post.userId === userId);
+export async function updatePost(id: string, update: Partial<Post>) {
+  return PostModel.findByIdAndUpdate(id, update, { new: true });
 }
 
-export function getAllPosts(): Post[] {
-  return posts;
+export async function deletePost(id: string) {
+  return PostModel.findByIdAndDelete(id);
 }
 
-
-export function likePost(postId: string, userId: string): void {
-  const post = getPost(postId);
-  if (post && !post.likedBy.includes(userId)) {
-    post.likedBy.push(userId);
-    post.likesCount++;
-  }
+export function getUserPosts(userId: string) {
+  return PostModel.find({ userId: userId }).exec();
 }
 
-
-export function unlikePost(postId: string, userId: string): void {
-  const post = getPost(postId);
-  if (post && post.likedBy.includes(userId)) {
-    post.likedBy = post.likedBy.filter((id) => id !== userId);
-    post.likesCount--;
-  }
-}
-
-export function updatePost(id: string, updatedPost: Partial<Post>): boolean {
-  const post = getPost(id);
-  if (post) {
-    Object.assign(post, updatedPost);
-    return true;
-  }
-  return false;
-}
-
-
-export function deletePost(id: string): boolean {
-  const index = posts.findIndex((post) => post.id === id);
-  if (index !== -1) {
-    posts.splice(index, 1);
-    return true;
-  }
-  return false;
-}
+export default { getAllPosts, getPostById, addPost, updatePost, deletePost, getUserPosts};

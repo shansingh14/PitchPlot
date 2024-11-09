@@ -19,43 +19,35 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var comment_svc_exports = {};
 __export(comment_svc_exports, {
   addComment: () => addComment,
+  default: () => comment_svc_default,
   deleteComment: () => deleteComment,
-  getComments: () => getComments,
-  updateComment: () => updateComment
+  getCommentsByPostId: () => getCommentsByPostId
 });
 module.exports = __toCommonJS(comment_svc_exports);
-var import_post_svc = require("./post-svc");
-const comments = [];
-function addComment(comment) {
-  comments.push(comment);
-  const post = (0, import_post_svc.getPost)(comment.postId);
-  if (post) {
-    post.comments.push(comment);
-  }
+var import_mongoose = require("mongoose");
+const CommentSchema = new import_mongoose.Schema(
+  {
+    postId: { type: import_mongoose.Schema.Types.String, ref: "Post", required: true },
+    userId: { type: import_mongoose.Schema.Types.String, ref: "User", required: true },
+    content: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now }
+  },
+  { collection: "comments" }
+);
+const CommentModel = (0, import_mongoose.model)("Comment", CommentSchema);
+async function getCommentsByPostId(postId) {
+  return CommentModel.find({ postId });
 }
-function getComments(postId) {
-  return comments.filter((comment) => comment.postId === postId);
+async function addComment(comment) {
+  return CommentModel.create(comment);
 }
-function updateComment(id, updatedComment) {
-  const comment = comments.find((comment2) => comment2.id === id);
-  if (comment) {
-    Object.assign(comment, updatedComment);
-    return true;
-  }
-  return false;
+async function deleteComment(id) {
+  return CommentModel.findByIdAndDelete(id);
 }
-function deleteComment(id) {
-  const index = comments.findIndex((comment) => comment.id === id);
-  if (index !== -1) {
-    comments.splice(index, 1);
-    return true;
-  }
-  return false;
-}
+var comment_svc_default = { getCommentsByPostId, addComment, deleteComment };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   addComment,
   deleteComment,
-  getComments,
-  updateComment
+  getCommentsByPostId
 });

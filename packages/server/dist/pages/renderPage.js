@@ -25,7 +25,7 @@ var import_server = require("@calpoly/mustang/server");
 const defaults = {
   stylesheets: [
     "/styles/reset.css",
-    "/styles/tokens.css",
+    "/styles/token.css",
     "/styles/page.css",
     "/styles/profile.css",
     "/styles/navbar.css"

@@ -18,66 +18,48 @@ var __copyProps = (to, from, except, desc) => {
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var user_svc_exports = {};
 __export(user_svc_exports, {
-  createUser: () => createUser,
+  addUser: () => addUser,
+  default: () => user_svc_default,
   deleteUser: () => deleteUser,
-  followUser: () => followUser,
   getAllUsers: () => getAllUsers,
-  getUser: () => getUser,
-  unfollowUser: () => unfollowUser,
+  getUserById: () => getUserById,
   updateUser: () => updateUser
 });
 module.exports = __toCommonJS(user_svc_exports);
-const users = [];
-function createUser(user) {
-  users.push(user);
+var import_mongoose = require("mongoose");
+const UserSchema = new import_mongoose.Schema(
+  {
+    username: { type: String, required: true, unique: true },
+    email: { type: String, required: true },
+    passwordHash: { type: String, required: true },
+    profilePic: { type: String },
+    bio: { type: String },
+    createdAt: { type: Date, default: Date.now }
+  },
+  { collection: "users" }
+);
+const UserModel = (0, import_mongoose.model)("User", UserSchema);
+async function getAllUsers() {
+  return UserModel.find();
 }
-function getUser(id) {
-  return users.find((user) => user.id === id);
+async function getUserById(id) {
+  return UserModel.findById(id);
 }
-function getAllUsers() {
-  return users;
+async function addUser(user) {
+  return UserModel.create(user);
 }
-function followUser(userId, followId) {
-  const user = getUser(userId);
-  const followUser2 = getUser(followId);
-  if (user && followUser2 && !user.following.includes(followId)) {
-    user.following.push(followId);
-    followUser2.followers.push(userId);
-  }
+async function updateUser(id, update) {
+  return UserModel.findByIdAndUpdate(id, update, { new: true });
 }
-function unfollowUser(userId, unfollowId) {
-  const user = getUser(userId);
-  const unfollowUser2 = getUser(unfollowId);
-  if (user && unfollowUser2) {
-    user.following = user.following.filter((id) => id !== unfollowId);
-    unfollowUser2.followers = unfollowUser2.followers.filter(
-      (id) => id !== userId
-    );
-  }
+async function deleteUser(id) {
+  return UserModel.findByIdAndDelete(id);
 }
-function updateUser(id, updatedUser) {
-  const user = getUser(id);
-  if (user) {
-    Object.assign(user, updatedUser);
-    return true;
-  }
-  return false;
-}
-function deleteUser(id) {
-  const index = users.findIndex((user) => user.id === id);
-  if (index !== -1) {
-    users.splice(index, 1);
-    return true;
-  }
-  return false;
-}
+var user_svc_default = { getAllUsers, getUserById, addUser, updateUser, deleteUser };
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  createUser,
+  addUser,
   deleteUser,
-  followUser,
   getAllUsers,
-  getUser,
-  unfollowUser,
+  getUserById,
   updateUser
 });

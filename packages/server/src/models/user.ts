@@ -4,6 +4,7 @@ export interface User {
   email: string;
   passwordHash: string;
   profilePic?: string;
+  bio?: string
   createdAt: Date;
   following: string[];
   followers: string[];
