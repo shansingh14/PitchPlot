@@ -1,180 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Feed</title>
-
-    <link rel="stylesheet" href="/styles/navbar.css" />
-    <link rel="stylesheet" href="/styles/feedContent.css" />
-    <link rel="stylesheet" href="/styles/feedPage.css" />
-    <link rel="stylesheet" href="/styles/page.css" />
-  </head>
-
-  <body>
-    <header>
-      <nav class="navbar">
-      <div class="navbar-inner">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Social Media Feed</title>
+  <link rel="stylesheet" href="styles/feedpage.css" />
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="navbar-container">
+        <div class="logo">
+          <h1>PitchPlot</h1>
+        </div>
         <div class="nav-links">
-          <a href="index.html" class="nav-link active">Feed</a>
-          <a href="profile.html" class="nav-link">Profile</a>
-          <a href="#" class="nav-link">Login</a>
-          <a href="#" class="nav-link">SignUp</a>
+          <a href="index.html" class="active">Feed</a>
+          <a href="profile.html">Profile</a>
+          <a href="#">Settings</a>
         </div>
       </div>
-      </nav>
-    </header>
+    </nav>
+  </header>
 
-    <div class="feedContent" style="margin-top: 60px;">
-      <h1>Your Feed</h1>
+  <main role="main">
+    <section class="feed">
+      <!-- Button to open modal -->
+      <button class="open-modal-btn" onclick="openModal('create-post-modal')">Create Post</button>
 
-      <button id="createPostBtn">Create Post</button>
-
-      <div id="postModal" class="modal">
+      <!-- Modal Structure for Creating a New Post -->
+      <div id="create-post-modal" class="modal">
         <div class="modal-content">
-          <span class="close">&times;</span>
+          <span class="close" onclick="closeModal('create-post-modal')">&times;</span>
           <h2>Create a New Post</h2>
-          <form id="createPostForm">
-            <textarea
-              placeholder="Write your post here..."
-              id="postText"
-            ></textarea>
-            <input type="file" id="postImage" accept="image/*" />
-            <button type="submit">Submit</button>
+          <form id="create-post-form">
+            <textarea id="modal-post-content" placeholder="What's on your mind?" required></textarea>
+            <input type="url" id="modal-post-link" placeholder="Enter link URL (optional)" />
+            <label for="modal-post-image" class="image-upload">
+              <i class="fas fa-image"></i> Upload Image
+              <input type="file" id="modal-post-image" accept="image/*" hidden />
+            </label>
+            <button type="submit">Post</button>
           </form>
         </div>
       </div>
 
-      <article class="post">
-        <div class="userInfo">
-          <p class="userName">Jane Smith</p>
-          <p class="postText">Pretty good album drop</p>
-        </div>
-        <div class="postImageContainer">
-          <img src="images/billie-album.jpeg" alt="Mountains" class="postImage" />
-        </div>
-        <div class="commentsSection">
-          <h4>Comments</h4>
-          <div class="commentsList">
-            <p class="comment">Going to go listen rn!</p>
-            <p class="comment">Birds in the feather is my favorite</p>
-          </div>
-          <textarea placeholder="Add a comment..." class="commentInput"></textarea>
-          <button class="commentSubmit">Comment</button>
-        </div>
-      </article>
 
-      <article class="post">
-        <div class="userInfo">
-          <p class="userName">John Doe</p>
-          <p class="postText">Check out this amazing album by billie</p>
-        </div>
-        <div class="postImageContainer">
-          <img src="images/billie-album.jpeg" alt="Dog" class="postImage" />
-        </div>
-        <div class="commentsSection">
-          <h4>Comments</h4>
-          <div class="commentsList">
-            <p class="comment">Checking it out rn</p>
-          </div>
-          <textarea placeholder="Add a comment..." class="commentInput"></textarea>
-          <button class="commentSubmit">Comment</button>
-        </div>
-      </article>
 
-    </div>
+      <!-- Posts will be dynamically added here -->
+    </section>
+  </main>
 
-    <script>
-      var modal = document.getElementById("postModal");
-      var btn = document.getElementById("createPostBtn");
-      var span = document.getElementsByClassName("close")[0];
-
-      btn.onclick = function () {
-        modal.style.display = "block";
-      };
-
-      span.onclick = function () {
-        modal.style.display = "none";
-      };
-
-      window.onclick = function (event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-        }
-      };
-
-      document.getElementById("createPostForm").addEventListener("submit", function (e) {
-        e.preventDefault();
-        var text = document.getElementById("postText").value;
-        var image = document.getElementById("postImage").files[0];
-
-        var postContainer = document.createElement("article");
-        postContainer.classList.add("post");
-
-        var postContent = `<div class="userInfo">
-          <p class="userName">You</p>
-          <p class="postText">${text}</p>`;
-
-        if (image) {
-          var reader = new FileReader();
-          reader.onload = function (e) {
-            postContent += `<div class="postImageContainer">
-                              <img src="${e.target.result}" class="postImage" />
-                            </div>`;
-            postContent += addCommentSection();
-            postContainer.innerHTML = postContent;
-            document.querySelector(".feedContent").appendChild(postContainer);
-            addCommentListeners(postContainer);
-          };
-          reader.readAsDataURL(image);
-        } else {
-          postContent += addCommentSection();
-          postContainer.innerHTML = postContent;
-          document.querySelector(".feedContent").appendChild(postContainer);
-          addCommentListeners(postContainer);
-        }
-
-        modal.style.display = "none";
-      });
-
-      function addCommentSection() {
-        return `<div class="commentsSection">
-                  <h4>Comments</h4>
-                  <div class="commentsList"></div>
-                  <textarea placeholder="Add a comment..." class="commentInput"></textarea>
-                  <button class="commentSubmit">Comment</button>
-                </div>`;
-      }
-
-      function addCommentListeners(postContainer) {
-        postContainer.querySelectorAll(".commentSubmit").forEach((button) => {
-          button.addEventListener("click", function () {
-            var commentText = this.previousElementSibling.value;
-            if (commentText.trim() !== "") {
-              var commentElement = document.createElement("p");
-              commentElement.classList.add("comment");
-              commentElement.innerText = commentText;
-              this.previousElementSibling.value = ""; // Clear input
-
-              this.parentNode.querySelector(".commentsList").appendChild(commentElement);
-            }
-          });
-        });
-      }
-
-      document.querySelectorAll(".commentSubmit").forEach((button) => {
-        button.addEventListener("click", function () {
-          var commentText = this.previousElementSibling.value;
-          if (commentText.trim() !== "") {
-            var commentElement = document.createElement("p");
-            commentElement.classList.add("comment");
-            commentElement.innerText = commentText;
-            this.previousElementSibling.value = ""; // Clear input
-
-            this.parentNode.querySelector(".commentsList").appendChild(commentElement);
-          }
-        });
-      });
-    </script>
-  </body>
+  <script src="scripts/modal.js"></script>
+  <script src="scripts/feed.js"></script>
+</body>
 </html>

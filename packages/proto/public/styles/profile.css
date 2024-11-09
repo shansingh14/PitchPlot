@@ -1,51 +1,47 @@
-.profilePage {
-  width: 100%;
-  max-width: 800px;
-  margin: auto;
-  padding: 1rem;
-  background-color: var(--color-background, #f0f0f0);
+/* Profile Section Styles */
+body {
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-.profileHeader {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
+.profile-container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.profilePic {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  object-fit: cover;
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-.profileInfo {
-  display: flex;
-  flex-direction: column;
+.profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 20px;
+    border: 2px solid #1b2f4f;
 }
 
-.profileName {
-  font-family: var(--font-heading);
-  font-size: 2rem;
+.profile-info h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #1b2f4f;
 }
 
-.profileBio {
-  font-family: var(--font-body);
-  color: #555;
-  margin-top: 0.5rem;
+.profile-info p {
+    margin: 5px 0;
+    color: #555;
 }
 
-.recentActivity {
-  margin-top: 2rem;
-}
-
-.activityList {
-  list-style-type: none;
-  padding: 0;
-}
-
-.activityList li {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #ddd;
+.profile-details p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 16px;
 }

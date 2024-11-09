@@ -1,57 +1,26 @@
-/* General Body and Layout */
 body {
-  font-family: var(--font-body);
-  background-color: var(--color-background, #f0f0f0);
-  color: var(--color-text, #333);
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-header {
-  width: 100%;
-  box-shadow: var(--shadow-xs);
-  background-color: var(--color-accent, #4267B2);
-  padding: 1rem;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    font-family: Arial, sans-serif;
+    background-color: #F9F7F7;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 main {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  padding: 1rem;
-}
-
-article.post {
-  background-color: var(--post-background, #fff);
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  width: 100%;
-  max-width: 600px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.postFooter {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 button {
-  background-color: var(--button-background, #4267B2);
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-bottom: 40px;
+    cursor: pointer;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff5c5c;
+    color: #fff;
 }
 
 button:hover {
-  background-color: var(--button-hover, #365899);
+    background-color: #ff7878;
 }

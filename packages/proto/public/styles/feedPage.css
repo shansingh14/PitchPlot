@@ -1,124 +1,221 @@
-/* Modal container */
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+header {
+  background-color: #1b2f4f;
+  color: #fff;
+  padding: 10px 0;
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.logo h1 {
+  margin: 0;
+}
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 20px;
+}
+
+.nav-links a.active {
+  font-weight: bold;
+}
+
+main {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+/* Create Post Button */
+.open-modal-btn {
+  background-color: #1b2f4f;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.open-modal-btn:hover {
+  background-color: #163a6b;
+}
+
+/* Modal Styles */
+/* Modal Background */
 .modal {
   display: none;
   position: fixed;
-  z-index: 1000;
-  left: 0;
   top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
-/* Modal content for creating a post */
+/* Modal Content */
 .modal-content {
-  width: 90%;
-  max-width: 500px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  position: relative;
-  box-sizing: border-box;
+  background-color: #fff !important;
+  padding: 20px !important;
+  border-radius: 8px !important;
+  width: 90% !important;
+  max-width: 500px !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
 }
 
-textarea {
-  width: 90%;
-  max-width: 100%;
-  box-sizing: border-box;
-  padding: 10px;
+/* Close Button */
+.close {
+  font-size: 24px;
+  color: #666;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+/* Heading */
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 24px;
+  font-weight: bold;
+  color: #1b2f4f;
+}
+
+/* Form Inputs */
+.modal-content textarea,
+.modal-content input[type="url"] {
+  width: 100%;
+  padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  margin-top: 10px;
-  resize: vertical;
-  min-height: 100px;
-  max-height: 300px;
-}
-
-/* Modal input fields */
-#postContent,
-#postImage {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  margin-top: 10px;
+  font-size: 14px;
   box-sizing: border-box;
 }
 
-#postLink {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-top: 10px;
+/* File Upload Label */
+.modal-content .image-upload {
+  display: inline-block;
+  background-color: #1b2f4f;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
-
-.postImageContainer a {
-    display: block;
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
+.modal-content .image-upload:hover {
+  background-color: #163a6b;
 }
 
-.postImageContainer img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    transition: opacity 0.3s ease;
-}
-
-.postImageContainer a:hover img {
-    opacity: 0.8;
-}
-
-input[type="file"] {
-  width: 100%;
-  margin-top: 10px;
-}
-
-/* Submit button styling */
-.submit-button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  background-color: #4267B2;
-  color: white;
+/* Submit Button */
+.modal-content button[type="submit"] {
+  background-color: #1b2f4f;
+  color: #fff;
   border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  align-self: flex-end;
+  margin-top: 4px;
+}
+
+.modal-content button[type="submit"]:hover {
+  background-color: #163a6b;
+}
+
+
+/* Post Styles */
+.post {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #555;
+}
+
+.post-content {
+  margin-top: 10px;
+}
+
+.post-content img.post-image {
+  max-width: 100%;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+.post-actions {
+  margin-top: 10px;
+}
+
+.post-actions button {
+  background-color: transparent;
+  border: none;
+  color: #1b2f4f;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.post-actions button:hover {
+  text-decoration: underline;
+}
+
+/* Comment Form Styles */
+.comment-form {
+  margin-top: 10px;
+}
+
+.comment-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.comment-form button {
+  background-color: #1b2f4f;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
   border-radius: 4px;
   cursor: pointer;
 }
 
-.submit-button:hover {
-  background-color: #365899;
+.comment-form button:hover {
+  background-color: #163a6b;
 }
 
-/* Close button styling */
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-  .modal-content {
-    width: 95%;
-    margin: 10px auto;
-    padding: 15px;
-  }
+/* Comment Styles */
+.post-comments p {
+  margin: 5px 0;
+  padding: 5px;
+  background-color: #f1f1f1;
+  border-radius: 4px;
 }

@@ -1,45 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Profile</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles/reset.css">
-  <link rel="stylesheet" href="/styles/navbar.css" />
-  <link rel="stylesheet" href="/styles/page.css">
-  <link rel="stylesheet" href="/styles/profile.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PitchPlot - Profile</title>
+    <link rel="stylesheet" href="styles/navbar.css">
+    <link rel="stylesheet" href="styles/feedpage.css">
+    <link rel="stylesheet" href="styles/profile.css">
 </head>
 <body>
-  <header>
-      <div class="navbar">
-        <a href="index.html" class="nav-link">Feed</a>
-        <a href="profile.html" class="nav-link active">Profile</a>
-      </div>
+    <header>
+        <nav>
+            <div class="navbar-container">
+                <div class="logo">
+                    <h1>PitchPlot</h1>
+                </div>
+                <div class="nav-links">
+                    <a href="index.html">Feed</a>
+                    <a href="profile.html" class="active">Profile</a>
+                    <a href="#">Settings</a>
+                </div>
+            </div>
+        </nav>
     </header>
 
-
-  <main class="profilePage">
-    <section class="profileContent">
-      <div class="profileHeader">
-        <img src="/images/billie-album.jpeg" alt="Profile Picture" class="profilePic">
-        <div class="profileInfo">
-          <h1 class="profileName">John Doe</h1>
-          <p class="profileBio">Software engineer, music lover, and photographer.</p>
-        </div>
-      </div>
-
-      <div class="recentActivity">
-        <h2>Recent Activity</h2>
-        <ul class="activityList">
-          <li>Posted a photo of new billie album.</li>
-          <li>Commented on Alice's billie album  post.</li>
-          <li>Liked Charlie's billie album post.</li>
-        </ul>
-      </div>
-    </section>
-  </main>
-
-  <script src="/scripts/main.js"></script>
+    <main>
+        <section class="profile-container">
+            <div class="profile-header">
+                <img src="images/clairo-album.webp" alt="Profile Picture" class="profile-pic">
+                <div class="profile-info">
+                    <h2>Bob Smith</h2>
+                    <p>Music lover, Concert enthusiast, and Coffee addict.</p>
+                </div>
+            </div>
+            <div class="profile-details">
+                <p><strong>Location:</strong> New York City, USA</p>
+                <p><strong>Member Since:</strong> January 2023</p>
+                <p><strong>Friends:</strong> 32</p>
+            </div>
+        </section>
+    </main>
 </body>
 </html>

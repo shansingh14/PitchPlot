@@ -1,94 +1,73 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const modal = document.getElementById("postModal");
-  const btn = document.getElementById("createPostBtn");
-  const span = document.getElementsByClassName("close")[0];
-  const submitBtn = document.querySelector(".submit-button");
+document.addEventListener("DOMContentLoaded", () => {
+  const createPostForm = document.getElementById("create-post-form");
+  const feedContainer = document.querySelector(".feed");
 
-  btn.onclick = function () {
-    modal.style.display = "block";
-  };
+  // Handle new post creation
+  createPostForm.addEventListener("submit", (event) => {
+    event.preventDefault();
 
-  span.onclick = function () {
-    modal.style.display = "none";
-  };
+    const postContent = document.getElementById("modal-post-content").value.trim();
+    const postLink = document.getElementById("modal-post-link").value.trim();
+    const postImageInput = document.getElementById("modal-post-image");
+    const postImage = postImageInput.files[0];
 
-  window.onclick = function (event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
+    if (postContent) {
+      const newPost = document.createElement("div");
+      newPost.classList.add("post");
+
+      let postHTML = `
+        <div class="post-header">
+          <span>New User | ${new Date().toLocaleDateString()}</span>
+          <span>❤️ 0 | 💬 0</span>
+        </div>
+        <div class="post-content">
+          <p>${postContent}</p>
+      `;
+
+      if (postImage) {
+        const imageURL = URL.createObjectURL(postImage);
+        postHTML += `<img src="${imageURL}" alt="Post Image" class="post-image">`;
+      }
+
+      if (postLink) {
+        postHTML += `<a href="${postLink}" target="_blank">${postLink}</a>`;
+      }
+
+      postHTML += `
+        </div>
+        <div class="comment-input-container">
+          <textarea class="comment-input" placeholder="Write a comment..." required></textarea>
+          <button class="comment-submit-button">Comment</button>
+        </div>
+        <div class="post-comments"></div>
+      `;
+
+      newPost.innerHTML = postHTML;
+      feedContainer.insertBefore(newPost, feedContainer.firstChild);
+
+      // Add event listener for the new post's comment button
+      addCommentFunctionality(newPost);
+
+      // Reset form and close modal
+      createPostForm.reset();
+      closeModal("create-post-modal");
     }
-  };
+  });
 
-  submitBtn.onclick = function () {
-    const content = document.getElementById("postContent").value;
-    const imageFile = document.getElementById("postImage").files[0];
-    const link = document.getElementById("postLink").value;
+  // Function to add comment functionality to a post
+  function addCommentFunctionality(postElement) {
+    const commentButton = postElement.querySelector(".comment-submit-button");
+    const commentInput = postElement.querySelector(".comment-input");
+    const postComments = postElement.querySelector(".post-comments");
 
-    if (content || imageFile) {
-      createPost(content, imageFile, link);
-      modal.style.display = "none";
-      clearForm();
-    } else {
-      alert("Please enter some content or choose an image for your post.");
-    }
-  };
-
-  function createPost(content, imageFile, link) {
-    const post = document.createElement("div");
-    post.className = "post";
-
-    const userInfo = document.createElement("div");
-    userInfo.className = "userInfo";
-    userInfo.innerHTML = `
-            <img src="path_to_user_icon.jpg" alt="User Icon" class="userIcon">
-            <div>
-                <span class="userName">Current User</span>
-                <p>${content}</p>
-            </div>
-        `;
-
-    post.appendChild(userInfo);
-
-    if (imageFile) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const imageContainer = document.createElement("div");
-        imageContainer.className = "postImageContainer";
-
-        const imageLink = document.createElement("a");
-        imageLink.href = link || "#";
-        imageLink.target = "_blank";
-
-        const image = document.createElement("img");
-        image.src = e.target.result;
-        image.className = "postImage";
-        image.alt = "Posted Image";
-
-        imageLink.appendChild(image);
-        imageContainer.appendChild(imageLink);
-        post.appendChild(imageContainer);
-      };
-      reader.readAsDataURL(imageFile);
-    }
-
-    const commentsSection = document.createElement("div");
-    commentsSection.className = "commentsSection";
-    commentsSection.innerHTML = `
-            <h4>Comments</h4>
-            <div class="commentsList"></div>
-            <textarea class="commentInput" placeholder="Add a comment..."></textarea>
-            <button class="commentSubmit">Comment</button>
-        `;
-
-    post.appendChild(commentsSection);
-
-    document
-      .querySelector(".feedContent")
-      .insertBefore(post, document.querySelector(".post"));
-  }
-
-  function clearForm() {
-    document.getElementById("postContent").value = "";
-    document.getElementById("postImage").value = "";
-    document.getElementById("postLink").value = "";
+    commentButton.addEventListener("click", () => {
+      const commentText = commentInput.value.trim();
+      if (commentText) {
+        const commentElement = document.createElement("p");
+        commentElement.innerHTML = `<strong>New User:</strong> ${commentText}`;
+        postComments.appendChild(commentElement);
+        commentInput.value = "";
+      }
+    });
   }
 });
