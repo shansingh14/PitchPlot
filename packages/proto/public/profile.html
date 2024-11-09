@@ -1,44 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PitchPlot - Profile</title>
-    <link rel="stylesheet" href="styles/navbar.css">
-    <link rel="stylesheet" href="styles/feedpage.css">
-    <link rel="stylesheet" href="styles/profile.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profile</title>
+  <link rel="stylesheet" href="styles/token.css" />
+  <link rel="stylesheet" href="styles/navbar.css" />
+  <link rel="stylesheet" href="styles/feedpage.css" />
+  <link rel="stylesheet" href="styles/profile.css" />
+  <script src="scripts/dark-mode.js" defer></script>
 </head>
 <body>
-    <header>
-        <nav>
-            <div class="navbar-container">
-                <div class="logo">
-                    <h1>PitchPlot</h1>
-                </div>
-                <div class="nav-links">
-                    <a href="index.html">Feed</a>
-                    <a href="profile.html" class="active">Profile</a>
-                    <a href="#">Settings</a>
-                </div>
-            </div>
-        </nav>
-    </header>
+  <header>
+    <nav>
+      <div class="navbar-container">
+        <div class="logo">
+          <h1>PitchPlot</h1>
+        </div>
+        <div class="nav-links">
+          <a href="index.html">Feed</a>
+          <a href="profile.html" class="active">Profile</a>
+          <a href="#">Settings</a>
+        </div>
+        <label>
+          <input type="checkbox" id="darkModeSwitch" autocomplete="off" />
+          Dark mode
+        </label>
+      </div>
+    </nav>
+  </header>
 
-    <main>
-        <section class="profile-container">
-            <div class="profile-header">
-                <img src="images/clairo-album.webp" alt="Profile Picture" class="profile-pic">
-                <div class="profile-info">
-                    <h2>Bob Smith</h2>
-                    <p>Music lover, Concert enthusiast, and Coffee addict.</p>
-                </div>
-            </div>
-            <div class="profile-details">
-                <p><strong>Location:</strong> New York City, USA</p>
-                <p><strong>Member Since:</strong> January 2023</p>
-                <p><strong>Friends:</strong> 32</p>
-            </div>
-        </section>
-    </main>
+  <main>
+    <user-profile profile-pic="profile-pic.jpg">
+      <span slot="name">Alice Smith</span>
+      <span slot="bio">Lover of music, art, and all things creative.</span>
+      <span slot="location">New York, USA</span>
+      <span slot="member-since">January 2022</span>
+      <span slot="friends">150</span>
+    </user-profile>
+
+    <section class="posts">
+      <!-- Mock posts to match TypeScript output for consistency -->
+      <article class="post">
+        <header class="post-header">
+          <h2>Exploring new music genres!</h2>
+          <time class="post-time">Posted on: 2023-10-12</time>
+        </header>
+        <div class="post-interactions">
+          <span>20 Likes</span>
+          <span>5 Comments</span>
+        </div>
+      </article>
+
+      <article class="post">
+        <header class="post-header">
+          <h2>Art gallery visit</h2>
+          <time class="post-time">Posted on: 2023-10-10</time>
+        </header>
+        <div class="post-interactions">
+          <span>35 Likes</span>
+          <span>10 Comments</span>
+        </div>
+      </article>
+    </section>
+  </main>
 </body>
 </html>

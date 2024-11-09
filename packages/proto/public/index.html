@@ -1,56 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Social Media Feed</title>
-  <link rel="stylesheet" href="styles/feedpage.css" />
-</head>
-<body>
-  <header>
-    <nav>
-      <div class="navbar-container">
-        <div class="logo">
-          <h1>PitchPlot</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Social Media Feed</title>
+    <link rel="stylesheet" href="styles/token.css" />
+    <link rel="stylesheet" href="styles/navbar.css" />
+    <link rel="stylesheet" href="styles/feedpage.css" />
+    <script src="scripts/dark-mode.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="navbar-container">
+          <div class="logo"><h1>PitchPlot</h1></div>
+          <div class="nav-links">
+            <a href="index.html" class="active">Feed</a>
+            <a href="profile.html">Profile</a>
+            <a href="#">Settings</a>
+          </div>
+          <label>
+            <input type="checkbox" id="darkModeSwitch" autocomplete="off" />
+            Dark mode
+          </label>
         </div>
-        <div class="nav-links">
-          <a href="index.html" class="active">Feed</a>
-          <a href="profile.html">Profile</a>
-          <a href="#">Settings</a>
+      </nav>
+    </header>
+
+    <main role="main">
+      <section class="feed">
+        <button id="createPostBtn" class="open-modal-btn">Create Post</button>
+
+        <!-- Modal for creating a new post -->
+        <div id="postModal" class="modal">
+          <div class="modal-content">
+            <span class="close" onclick="closeModal('postModal')">&times;</span>
+            <h2>Create a New Post</h2>
+            <form id="createPostForm">
+              <textarea
+                id="postContent"
+                placeholder="What's on your mind?"
+                required
+              ></textarea>
+              <input
+                type="url"
+                id="postLink"
+                placeholder="Enter link URL (optional)"
+              />
+              <input type="file" id="postImage" accept="image/*" hidden />
+              <label for="postImage" class="image-upload">
+                <i class="fas fa-image"></i> Upload Image
+              </label>
+              <button type="submit">Post</button>
+            </form>
+          </div>
         </div>
-      </div>
-    </nav>
-  </header>
 
-  <main role="main">
-    <section class="feed">
-      <!-- Button to open modal -->
-      <button class="open-modal-btn" onclick="openModal('create-post-modal')">Create Post</button>
+        <!-- Container for posts -->
+        <div id="postsContainer"></div>
+      </section>
+    </main>
 
-      <!-- Modal Structure for Creating a New Post -->
-      <div id="create-post-modal" class="modal">
-        <div class="modal-content">
-          <span class="close" onclick="closeModal('create-post-modal')">&times;</span>
-          <h2>Create a New Post</h2>
-          <form id="create-post-form">
-            <textarea id="modal-post-content" placeholder="What's on your mind?" required></textarea>
-            <input type="url" id="modal-post-link" placeholder="Enter link URL (optional)" />
-            <label for="modal-post-image" class="image-upload">
-              <i class="fas fa-image"></i> Upload Image
-              <input type="file" id="modal-post-image" accept="image/*" hidden />
-            </label>
-            <button type="submit">Post</button>
-          </form>
-        </div>
-      </div>
+    <script src="scripts/modal.js"></script>
+    <script src="scripts/feed.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "@calpoly/mustang": "https://unpkg.com/@calpoly/mustang"
+        }
+      }
+    </script>
+    <script type="module">
+      import { define } from "@calpoly/mustang";
+      import { UserPost } from "/scripts/user-post.js";
 
-
-
-      <!-- Posts will be dynamically added here -->
-    </section>
-  </main>
-
-  <script src="scripts/modal.js"></script>
-  <script src="scripts/feed.js"></script>
-</body>
+      define({
+        "user-post": UserPost,
+      });
+    </script>
+  </body>
 </html>
