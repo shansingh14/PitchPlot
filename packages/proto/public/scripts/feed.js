@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
+
       const postsContainer = document.getElementById("postsContainer");
       postsContainer.prepend(postElement);
 
