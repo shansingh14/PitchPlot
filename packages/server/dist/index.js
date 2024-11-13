@@ -71,11 +71,9 @@ app.post(
     }
     const newPost = {
       id: (Math.random() * 1e5).toString(),
-      // Generate ID
       userId,
       content,
       link: link || null,
-      // Optional link field
       createdAt: /* @__PURE__ */ new Date(),
       likesCount: 0,
       likedBy: [],

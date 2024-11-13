@@ -5,26 +5,33 @@ export class ModalComponent extends HTMLElement {
 
   render() {
     this.innerHTML = `
-      <div class="modal-overlay"></div>
-      <div class="modal">
-        <button class="close-modal-btn">&times;</button>
-        <h2>Create a New Post</h2>
-        <form id="postForm">
-          <textarea placeholder="What's on your mind?" required></textarea>
-          <input type="url" placeholder="Link URL (optional)" id="linkField" />
-          <input type="file" id="imageUpload" accept="image/*" />
-          <button type="submit">Post</button>
-        </form>
+      <div class="modal-overlay">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>Create a New Post</h2>
+            <button class="close-button">&times;</button>
+          </div>
+          <div class="modal-body">
+            <textarea placeholder="What's on your mind?" required></textarea>
+            <input type="url" placeholder="Link URL (optional)" id="linkField" />
+            <input type="file" id="imageUpload" accept="image/*" class="file-input" />
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="post-button">Post</button>
+          </div>
+        </div>
       </div>
     `;
 
-    this.querySelector(".modal-overlay").addEventListener("click", () =>
+    this.querySelector(".modal-overlay").addEventListener("click", (event) => {
+      if (event.target === event.currentTarget) {
+        this.closeModal();
+      }
+    });
+    this.querySelector(".close-button").addEventListener("click", () =>
       this.closeModal()
     );
-    this.querySelector(".close-modal-btn").addEventListener("click", () =>
-      this.closeModal()
-    );
-    this.querySelector("#postForm").addEventListener("submit", (event) =>
+    this.querySelector(".post-button").addEventListener("click", (event) =>
       this.handlePostSubmit(event)
     );
   }
@@ -43,7 +50,7 @@ export class ModalComponent extends HTMLElement {
       content: postContent,
       link: linkUrl,
       userId: "user1",
-      id: "post" + Math.floor(Math.random() * 100)
+      id: "post" + Math.floor(Math.random() * 100),
     };
 
     try {

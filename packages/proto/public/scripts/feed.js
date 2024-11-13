@@ -106,6 +106,6 @@ document
   document.addEventListener("DOMContentLoaded", () => {
     const createPostBtn = document.getElementById("createPostBtn");
     createPostBtn.addEventListener("click", () => {
-      openModal("postModal"); // Call openModal function from modal.js
+      openModal("postModal");
     });
   });

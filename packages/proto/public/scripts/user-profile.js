@@ -4,7 +4,11 @@ export class UserProfile extends HTMLElement {
   static template = html`
     <template>
       <div class="profile">
-        <img class="profile-pic" src="" alt="Profile Picture" />
+        <img
+          class="profile-pic"
+          src="../images/clairo-album.webp"
+          alt="Profile Picture"
+        />
         <div class="profile-info">
           <h2><slot name="name">User Name</slot></h2>
           <p><slot name="bio">User Bio</slot></p>
@@ -25,7 +29,7 @@ export class UserProfile extends HTMLElement {
       display: flex;
       align-items: center;
       padding: 15px;
-      background-color: #fff;
+      background-color: var(--color-card-background);
       border-radius: 8px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
       max-width: 800px;
@@ -36,20 +40,25 @@ export class UserProfile extends HTMLElement {
       height: 80px;
       border-radius: 50%;
       margin-right: 20px;
-      border: 2px solid #1b2f4f;
+      border: 3px solid var(--color-accent);
     }
+
+    .profile-info {
+      align-items: center;
+    }
+
     .profile-info h2 {
       margin: 0;
       font-size: 20px;
-      color: #1b2f4f;
+      color: var(--color-text-primary);
     }
     .profile-info p {
       margin: 5px 0;
-      color: #555;
+      color: var(--color-text-primary);
       font-size: 14px;
     }
     .profile-info p strong {
-      color: #333;
+      color: var(--color-text-primary);
     }
   `;
 

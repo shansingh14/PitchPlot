@@ -3,22 +3,81 @@ import { css, html, shadow } from "https://unpkg.com/@calpoly/mustang";
 export class FeedList extends HTMLElement {
   static template = html`
     <template>
-      <div class="feed-list">
+      <div class="feed-container">
+        <div class="feed-list"></div>
       </div>
     </template>
   `;
 
   static styles = css`
-    .feed-list .post {
-      border-bottom: 1px solid #ccc;
+    :host {
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .feed-container {
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .post {
+      background-color: var(--color-card-background);
+      border: 1px solid var(--border-color, #ddd);
+      border-radius: 8px;
       padding: 1rem;
-      margin-bottom: 1rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
-    .post-author {
-      font-weight: bold;
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: var(--color-text-primary);
+      margin-bottom: 0.5rem;
     }
+
     .post-content {
+      font-size: 1rem;
+      color: var(--color-text-secondary);
+      margin: 0.5rem 0;
+    }
+
+    .post-link {
+      color: var(--link-color, #0077cc);
+      text-decoration: underline;
       margin-top: 0.5rem;
+      display: block;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: flex-start;
+      margin-top: 0.5rem;
+    }
+
+    .like-button,
+    .comment-button {
+      padding: 0.4rem 1rem;
+      font-size: 0.9rem;
+      color: #fff;
+      background-color: var(--color-accent);
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 0.5rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .like-button:hover,
+    .comment-button:hover {
+      background-color: var(--color-accent-hover);
     }
   `;
 
@@ -51,15 +110,27 @@ export class FeedList extends HTMLElement {
     const fragment = document.createDocumentFragment();
     posts.forEach((post) => {
       const postElement = document.createElement("div");
-      postElement.classList.add("post");
+      postElement.className = "post";
+
       postElement.innerHTML = `
-        <div class="post-author">${post.userId}</div>
+        <div class="post-header">
+          <span class="username">${post.userId}</span>
+          <span class="date">${new Date(
+            post.createdAt
+          ).toLocaleDateString()}</span>
+        </div>
         <div class="post-content">${post.content}</div>
-        <div class="post-date">${new Date(
-          post.createdAt
-        ).toLocaleDateString()}</div>
-        <div class="post-likes">${post.likesCount} likes</div>
+        ${
+          post.link
+            ? `<a href="${post.link}" class="post-link">${post.link}</a>`
+            : ""
+        }
+        <div class="buttons">
+          <button class="like-button">Like</button>
+          <button class="comment-button">Comment</button>
+        </div>
       `;
+
       fragment.appendChild(postElement);
     });
     this.shadowRoot.querySelector(".feed-list").appendChild(fragment);

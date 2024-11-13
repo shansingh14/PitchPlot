@@ -15,6 +15,7 @@
 }
 
 .logo h1 {
+  color: var(--color-background);
   font-size: 24px;
   margin: 0;
 }
@@ -22,6 +23,7 @@
 .nav-links a {
   color: var(--color-background);
   text-decoration: none;
+  font-size: 20px;
   margin-left: 20px;
 }
 
@@ -34,12 +36,18 @@
 }
 
 .dark-mode-toggle {
-  margin-left: auto;
-  padding-right: 10px;
+  padding-right: 30px;
   display: flex;
   align-items: center;
 }
 
 .dark-mode-toggle input[type="checkbox"] {
   margin-right: 5px;
+}
+
+.label {
+  margin-left: auto;
+  padding-right: 10px;
+  display: flex;
+  align-items: center;
 }
