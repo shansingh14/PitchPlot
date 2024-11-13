@@ -147,9 +147,9 @@ export class UserPost extends HTMLElement {
     const postImageElement = this.shadowRoot.querySelector(".post-image");
     if (postImage) {
       postImageElement.src = postImage;
-      postImageElement.style.display = "block"; // Show image if provided
+      postImageElement.style.display = "block";
     } else {
-      postImageElement.style.display = "none"; // Hide image if none provided
+      postImageElement.style.display = "none";
     }
 
     const commentButton = this.shadowRoot.querySelector(".comment-button");

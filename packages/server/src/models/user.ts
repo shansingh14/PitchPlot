@@ -4,6 +4,8 @@ export interface User {
   email: string;
   passwordHash: string;
   profilePic?: string;
+  location?: string;
   bio?: string
   createdAt: Date;
+  friendsCount: number;
 }

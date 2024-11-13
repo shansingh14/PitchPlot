@@ -26,23 +26,23 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var userProfilePage_exports = {};
-__export(userProfilePage_exports, {
-  UserProfilePage: () => UserProfilePage
+var feedPage_exports = {};
+__export(feedPage_exports, {
+  FeedPage: () => FeedPage
 });
-module.exports = __toCommonJS(userProfilePage_exports);
+module.exports = __toCommonJS(feedPage_exports);
 var import_renderPage = __toESM(require("./renderPage"));
 var import_server = require("@calpoly/mustang/server");
-class UserProfilePage {
-  static render({ userId }) {
+class FeedPage {
+  static render() {
     return (0, import_renderPage.default)({
       body: import_server.html`
         <nav-bar></nav-bar>
-        <user-profile src="/api/users/${userId}"></user-profile>
-        <feed-list src="/api/posts?user=${userId}"></feed-list>
+        <create-post></create-post>
+        <feed-list src="/api/posts"></feed-list>
       `,
       stylesheets: [
-        "/styles/profile.css",
+        "/styles/feedpage.css",
         "/styles/navbar.css",
         "/styles/token.css"
       ]
@@ -51,5 +51,5 @@ class UserProfilePage {
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  UserProfilePage
+  FeedPage
 });

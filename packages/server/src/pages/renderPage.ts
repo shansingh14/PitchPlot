@@ -1,18 +1,31 @@
-// src/pages/renderPage.ts
 import { PageParts, renderWithDefaults } from "@calpoly/mustang/server";
 
 const defaults = {
   stylesheets: [
-    "/styles/reset.css",
     "/styles/token.css",
-    "/styles/page.css",
-    "/styles/profile.css",
     "/styles/navbar.css",
+    "/styles/feedpage.css",
+    "/styles/modal.css",
   ],
-  styles: [],
-  scripts: ["/scripts/user-post.js"],
+  scripts: [
+    `import { define } from "@calpoly/mustang";
+import { UserProfile } from "/scripts/user-profile.js";
+import { FeedList } from "/scripts/feed-list.js";
+import { NavBar } from "/scripts/nav-bar.js";
+import { CreatePostButton } from "/scripts/create-post.js";
+import { ModalComponent } from "/scripts/modal-component.js";
+
+define({
+  "user-profile": UserProfile,
+  "feed-list": FeedList,
+  "nav-bar": NavBar,
+  "create-post": CreatePostButton,
+  "modal-component": ModalComponent,
+});
+    `,
+  ],
   googleFontURL:
-    "https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,200;0,400;0,700;1,700&family=Merriweather:wght@400;700&display=swap",
+    "https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap",
   imports: {
     "@calpoly/mustang": "https://unpkg.com/@calpoly/mustang",
   },

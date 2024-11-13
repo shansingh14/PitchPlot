@@ -1,39 +1,37 @@
 import { Schema, model } from "mongoose";
 import { User } from "../models/user";
 
-const UserSchema = new Schema<User>(
-  {
-    id: { type: String },
-    username: { type: String, required: true, unique: true },
-    email: { type: String, required: true },
-    passwordHash: { type: String, required: true },
-    profilePic: { type: String },
-    bio: { type: String },
-    createdAt: { type: Date, default: Date.now },
-  },
-  { collection: "users" }
-);
+const UserSchema = new Schema<User>({
+  id: { type: String, required: true, unique: true },
+  username: { type: String, required: true, trim: true },
+  email: { type: String, required: true, unique: true, trim: true },
+  passwordHash: { type: String, required: true },
+  profilePic: { type: String },
+  bio: { type: String },
+  createdAt: { type: Date, default: Date.now },
+  friendsCount: {type: Number, default: 0}
+});
 
 const UserModel = model<User>("User", UserSchema);
 
-export async function getAllUsers() {
-  return UserModel.find();
+function index(): Promise<User[]> {
+  return UserModel.find().exec();
 }
 
-export async function getUserById(id: string) {
-  return UserModel.findById(id);
+function getUserById(userId: string): Promise<User | null> {
+  return UserModel.findOne({ id: userId }).exec();
 }
 
-export async function addUser(user: User) {
-  return UserModel.create(user);
+function createUser(userData: Partial<User>): Promise<User> {
+  return UserModel.create(userData);
 }
 
-export async function updateUser(id: string, update: Partial<User>) {
-  return UserModel.findByIdAndUpdate(id, update, { new: true });
+function updateUser(userId: string, updatedData: Partial<User>): Promise<User | null> {
+  return UserModel.findOneAndUpdate({ id: userId }, updatedData, { new: true }).exec();
 }
 
-export async function deleteUser(id: string) {
-  return UserModel.findByIdAndDelete(id);
+function deleteUser(userId: string): Promise<{ deletedCount?: number }> {
+  return UserModel.deleteOne({ id: userId }).exec();
 }
 
-export default { getAllUsers, getUserById, addUser, updateUser, deleteUser };
+export default { index, getUserById, createUser, updateUser, deleteUser };

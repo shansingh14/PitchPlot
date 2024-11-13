@@ -18,49 +18,34 @@ var __copyProps = (to, from, except, desc) => {
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var user_svc_exports = {};
 __export(user_svc_exports, {
-  addUser: () => addUser,
-  default: () => user_svc_default,
-  deleteUser: () => deleteUser,
-  getAllUsers: () => getAllUsers,
-  getUserById: () => getUserById,
-  updateUser: () => updateUser
+  default: () => user_svc_default
 });
 module.exports = __toCommonJS(user_svc_exports);
 var import_mongoose = require("mongoose");
-const UserSchema = new import_mongoose.Schema(
-  {
-    id: { type: String },
-    username: { type: String, required: true, unique: true },
-    email: { type: String, required: true },
-    passwordHash: { type: String, required: true },
-    profilePic: { type: String },
-    bio: { type: String },
-    createdAt: { type: Date, default: Date.now }
-  },
-  { collection: "users" }
-);
-const UserModel = (0, import_mongoose.model)("User", UserSchema);
-async function getAllUsers() {
-  return UserModel.find();
-}
-async function getUserById(id) {
-  return UserModel.findById(id);
-}
-async function addUser(user) {
-  return UserModel.create(user);
-}
-async function updateUser(id, update) {
-  return UserModel.findByIdAndUpdate(id, update, { new: true });
-}
-async function deleteUser(id) {
-  return UserModel.findByIdAndDelete(id);
-}
-var user_svc_default = { getAllUsers, getUserById, addUser, updateUser, deleteUser };
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  addUser,
-  deleteUser,
-  getAllUsers,
-  getUserById,
-  updateUser
+const UserSchema = new import_mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  username: { type: String, required: true, trim: true },
+  email: { type: String, required: true, unique: true, trim: true },
+  passwordHash: { type: String, required: true },
+  profilePic: { type: String },
+  bio: { type: String },
+  createdAt: { type: Date, default: Date.now },
+  friendsCount: { type: Number, default: 0 }
 });
+const UserModel = (0, import_mongoose.model)("User", UserSchema);
+function index() {
+  return UserModel.find().exec();
+}
+function getUserById(userId) {
+  return UserModel.findOne({ id: userId }).exec();
+}
+function createUser(userData) {
+  return UserModel.create(userData);
+}
+function updateUser(userId, updatedData) {
+  return UserModel.findOneAndUpdate({ id: userId }, updatedData, { new: true }).exec();
+}
+function deleteUser(userId) {
+  return UserModel.deleteOne({ id: userId }).exec();
+}
+var user_svc_default = { index, getUserById, createUser, updateUser, deleteUser };

@@ -18,55 +18,48 @@ var __copyProps = (to, from, except, desc) => {
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var post_svc_exports = {};
 __export(post_svc_exports, {
-  addPost: () => addPost,
-  default: () => post_svc_default,
-  deletePost: () => deletePost,
-  getAllPosts: () => getAllPosts,
-  getPostById: () => getPostById,
-  getUserPosts: () => getUserPosts,
-  updatePost: () => updatePost
+  default: () => post_svc_default
 });
 module.exports = __toCommonJS(post_svc_exports);
 var import_mongoose = require("mongoose");
-const PostSchema = new import_mongoose.Schema(
-  {
-    id: { type: String },
-    userId: { type: String },
-    content: { type: String },
-    image: { type: String, default: "" },
-    createdAt: { type: Date, default: Date.now },
-    likesCount: { type: Number, default: 0 },
-    likedBy: [{ type: import_mongoose.Schema.Types.ObjectId, ref: "User" }],
-    comments: [{ type: import_mongoose.Schema.Types.ObjectId, ref: "Comment" }]
-  },
-  { collection: "posts" }
-);
+const PostSchema = new import_mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  userId: { type: String, required: true },
+  content: { type: String, required: true },
+  image: { type: String },
+  createdAt: { type: Date, default: Date.now },
+  likesCount: { type: Number, default: 0 },
+  likedBy: [{ type: String }],
+  comments: [{ type: String }]
+});
 const PostModel = (0, import_mongoose.model)("Post", PostSchema);
-async function getAllPosts() {
-  return PostModel.find();
-}
-async function getPostById(id) {
-  return PostModel.findById(id);
-}
-async function addPost(post) {
-  return PostModel.create(post);
-}
-async function updatePost(id, update) {
-  return PostModel.findByIdAndUpdate(id, update, { new: true });
-}
-async function deletePost(id) {
-  return PostModel.findByIdAndDelete(id);
-}
 function getUserPosts(userId) {
   return PostModel.find({ userId }).exec();
 }
-var post_svc_default = { getAllPosts, getPostById, addPost, updatePost, deletePost, getUserPosts };
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  addPost,
-  deletePost,
-  getAllPosts,
+function addPost(newPost) {
+  return PostModel.create(newPost);
+}
+function index() {
+  return PostModel.find().exec();
+}
+function getPostById(postId) {
+  return PostModel.findOne({ id: postId }).exec();
+}
+function createPost(postData) {
+  return PostModel.create(postData);
+}
+function updatePost(postId, updatedData) {
+  return PostModel.findOneAndUpdate({ id: postId }, updatedData, { new: true }).exec();
+}
+function deletePost(postId) {
+  return PostModel.deleteOne({ id: postId }).exec();
+}
+var post_svc_default = {
+  index,
   getPostById,
+  createPost,
+  updatePost,
+  deletePost,
   getUserPosts,
-  updatePost
-});
+  addPost
+};

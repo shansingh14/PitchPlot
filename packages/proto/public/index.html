@@ -1,82 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Social Media Feed</title>
-    <link rel="stylesheet" href="styles/token.css" />
-    <link rel="stylesheet" href="styles/navbar.css" />
-    <link rel="stylesheet" href="styles/feedpage.css" />
-    <script src="scripts/dark-mode.js" defer></script>
-  </head>
-  <body>
-    <header>
-      <nav>
-        <div class="navbar-container">
-          <div class="logo"><h1>PitchPlot</h1></div>
-          <div class="nav-links">
-            <a href="index.html" class="active">Feed</a>
-            <a href="profile.html">Profile</a>
-            <a href="#">Settings</a>
-          </div>
-          <label>
-            <input type="checkbox" id="darkModeSwitch" autocomplete="off" />
-            Dark mode
-          </label>
-        </div>
-      </nav>
-    </header>
-
-    <main role="main">
-      <section class="feed">
-        <button id="createPostBtn" class="open-modal-btn">Create Post</button>
-
-        <!-- Modal for creating a new post -->
-        <div id="postModal" class="modal">
-          <div class="modal-content">
-            <span class="close" onclick="closeModal('postModal')">&times;</span>
-            <h2>Create a New Post</h2>
-            <form id="createPostForm">
-              <textarea
-                id="postContent"
-                placeholder="What's on your mind?"
-                required
-              ></textarea>
-              <input
-                type="url"
-                id="postLink"
-                placeholder="Enter link URL (optional)"
-              />
-              <input type="file" id="postImage" accept="image/*" hidden />
-              <label for="postImage" class="image-upload">
-                <i class="fas fa-image"></i> Upload Image
-              </label>
-              <button type="submit">Post</button>
-            </form>
-          </div>
-        </div>
-
-        <!-- Container for posts -->
-        <div id="postsContainer"></div>
-      </section>
-    </main>
-
-    <script src="scripts/modal.js"></script>
-    <script src="scripts/feed.js"></script>
-    <script type="importmap">
-      {
-        "imports": {
-          "@calpoly/mustang": "https://unpkg.com/@calpoly/mustang"
-        }
-      }
-    </script>
-    <script type="module">
-      import { define } from "@calpoly/mustang";
-      import { UserPost } from "/scripts/user-post.js";
-
-      define({
-        "user-post": UserPost,
-      });
-    </script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to PitchPlot</title>
+  <link rel="stylesheet" href="/styles/welcome.css">
+</head>
+<body>
+  <div class="welcome-container">
+    <h1>Welcome to PitchPlot</h1>
+    <p>Connect, share, and discover.</p>
+    <a href="/feed" class="start-button">Go to Feed</a>
+  </div>
+</body>
 </html>

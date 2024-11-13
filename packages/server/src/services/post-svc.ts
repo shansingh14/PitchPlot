@@ -1,44 +1,54 @@
-import { Schema, model, Document, Types } from "mongoose";
+import { Schema, model } from "mongoose";
 import { Post } from "../models/post";
 
-const PostSchema = new Schema<Post>(
-  {
-    id: { type: String },
-    userId: {type: String},
-    content: { type: String},
-    image: { type: String, default: "" },
-    createdAt: { type: Date, default: Date.now },
-    likesCount: { type: Number, default: 0 },
-    likedBy: [{ type: Schema.Types.ObjectId as any, ref: "User" }],
-    comments: [{ type: Schema.Types.ObjectId as any, ref: "Comment" }],
-  },
-  { collection: "posts" }
-);
+
+const PostSchema = new Schema<Post>({
+  id: { type: String, required: true, unique: true },
+  userId: { type: String, required: true },
+  content: { type: String, required: true },
+  image: { type: String },
+  createdAt: { type: Date, default: Date.now },
+  likesCount: { type: Number, default: 0 },
+  likedBy: [{ type: String }],
+  comments: [{ type: String }],
+});
 
 const PostModel = model<Post>("Post", PostSchema);
 
-export async function getAllPosts() {
-  return PostModel.find();
+function getUserPosts(userId: string): Promise<Post[]> {
+  return PostModel.find({ userId }).exec();
 }
 
-export async function getPostById(id: string) {
-  return PostModel.findById(id);
+function addPost(newPost: Post): Promise<Post> {
+  return PostModel.create(newPost);
 }
 
-export async function addPost(post: Post) {
-  return PostModel.create(post);
+function index(): Promise<Post[]> {
+  return PostModel.find().exec();
 }
 
-export async function updatePost(id: string, update: Partial<Post>) {
-  return PostModel.findByIdAndUpdate(id, update, { new: true });
+function getPostById(postId: string): Promise<Post | null> {
+  return PostModel.findOne({ id: postId }).exec();
 }
 
-export async function deletePost(id: string) {
-  return PostModel.findByIdAndDelete(id);
+function createPost(postData: Partial<Post>): Promise<Post> {
+  return PostModel.create(postData);
 }
 
-export function getUserPosts(userId: string) {
-  return PostModel.find({ userId: userId }).exec();
+function updatePost(postId: string, updatedData: Partial<Post>): Promise<Post | null> {
+  return PostModel.findOneAndUpdate({ id: postId }, updatedData, { new: true }).exec();
 }
 
-export default { getAllPosts, getPostById, addPost, updatePost, deletePost, getUserPosts};
+function deletePost(postId: string): Promise<{ deletedCount?: number }> {
+  return PostModel.deleteOne({ id: postId }).exec();
+}
+
+export default {
+  index,
+  getPostById,
+  createPost,
+  updatePost,
+  deletePost,
+  getUserPosts,
+  addPost,
+};

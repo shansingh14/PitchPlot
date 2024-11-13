@@ -58,10 +58,43 @@ export class UserProfile extends HTMLElement {
     shadow(this).template(UserProfile.template).styles(UserProfile.styles);
   }
 
+  get src() {
+    return this.getAttribute("src");
+  }
+
   connectedCallback() {
-    const profilePic = this.getAttribute("profile-pic");
-    if (profilePic) {
-      this.shadowRoot.querySelector(".profile-pic").src = profilePic;
+    if (this.src) this.hydrate(this.src);
+  }
+
+  async hydrate(url) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok)
+        throw new Error(`Failed to fetch data: ${response.status}`);
+      const data = await response.json();
+      this.renderSlots(data);
+    } catch (error) {
+      console.error("Error loading user profile data:", error);
     }
   }
+
+  renderSlots(data) {
+    const slotMappings = {
+      name: data.username,
+      bio: data.bio,
+      "member-since": data.createdAt,
+      friends: data.friendCount,
+    };
+
+    Object.entries(slotMappings).forEach(([slotName, value]) => {
+      const slotElement = document.createElement("span");
+      slotElement.slot = slotName;
+      slotElement.textContent = value;
+      this.appendChild(slotElement);
+    });
+
+    this.shadowRoot.querySelector(".profile-pic").src = data.profilePic || "";
+  }
 }
+
+customElements.define("user-profile", UserProfile);

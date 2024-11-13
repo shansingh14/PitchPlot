@@ -32,3 +32,14 @@
 .nav-links a.active {
   font-weight: bold;
 }
+
+.dark-mode-toggle {
+  margin-left: auto;
+  padding-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.dark-mode-toggle input[type="checkbox"] {
+  margin-right: 5px;
+}

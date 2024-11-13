@@ -1,29 +1,25 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model } from "mongoose";
 import { PostComment } from "../models/comment";
 
-// Define the Mongoose schema for the comment directly within the service file
 const CommentSchema = new Schema<PostComment>(
   {
-    postId: { type: Schema.Types.String, ref: "Post", required: true },
-    userId: { type: Schema.Types.String, ref: "User", required: true },
+    id: { type: String, required: true, unique: true },
+    postId: { type: String, required: true },
+    userId: { type: String, required: true },
     content: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
   },
   { collection: "comments" }
 );
 
-const CommentModel = model<PostComment>("Comment", CommentSchema);
+const CommentModel = model<Comment>("Comment", CommentSchema);
 
-export async function getCommentsByPostId(postId: string) {
-  return CommentModel.find({ postId });
+function index(): Promise<Comment[]> {
+  return CommentModel.find();
 }
 
-export async function addComment(comment: PostComment) {
-  return CommentModel.create(comment);
+function get(commentId: string): Promise<Comment | null> {
+  return CommentModel.findOne({ id: commentId }).exec();
 }
 
-export async function deleteComment(id: string) {
-  return CommentModel.findByIdAndDelete(id);
-}
-
-export default { getCommentsByPostId, addComment, deleteComment };
+export default { index, get };

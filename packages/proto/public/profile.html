@@ -31,38 +31,19 @@
   </header>
 
   <main>
-    <user-profile profile-pic="profile-pic.jpg">
-      <span slot="name">Alice Smith</span>
-      <span slot="bio">Lover of music, art, and all things creative.</span>
-      <span slot="location">New York, USA</span>
-      <span slot="member-since">January 2022</span>
-      <span slot="friends">150</span>
-    </user-profile>
-
-    <section class="posts">
-      <!-- Mock posts to match TypeScript output for consistency -->
-      <article class="post">
-        <header class="post-header">
-          <h2>Exploring new music genres!</h2>
-          <time class="post-time">Posted on: 2023-10-12</time>
-        </header>
-        <div class="post-interactions">
-          <span>20 Likes</span>
-          <span>5 Comments</span>
-        </div>
-      </article>
-
-      <article class="post">
-        <header class="post-header">
-          <h2>Art gallery visit</h2>
-          <time class="post-time">Posted on: 2023-10-10</time>
-        </header>
-        <div class="post-interactions">
-          <span>35 Likes</span>
-          <span>10 Comments</span>
-        </div>
-      </article>
-    </section>
+    <user-profile></user-profile>
+    <feed-list></feed-list>
   </main>
+
+  <script src="/scripts/user-profile.js" defer></script>
+  <script src="/scripts/feed-list.js" defer></script>
+  <script>
+    const defaultUserId = "user1";
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get("userId") || defaultUserId;
+
+    document.querySelector("user-profile").setAttribute("src", `/api/users/${userId}`);
+    document.querySelector("feed-list").setAttribute("src", `/api/posts/user/${userId}`);
+  </script>
 </body>
 </html>

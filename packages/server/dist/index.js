@@ -22,103 +22,69 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var import_express = __toESM(require("express"));
-var import_mongo = require("./services/mongo");
+var import_path = __toESM(require("path"));
+var import_userProfilePage = require("./pages/userProfilePage");
+var import_feedPage = require("./pages/feedPage");
 var import_user_svc = __toESM(require("./services/user-svc"));
 var import_post_svc = __toESM(require("./services/post-svc"));
-var import_comment_svc = __toESM(require("./services/comment-svc"));
-var import_userProfilePage = require("./pages/userProfilePage");
-var import_path = __toESM(require("path"));
+var import_mongo = require("./services/mongo");
+var import_users = __toESM(require("./routes/users"));
+var import_posts = __toESM(require("./routes/posts"));
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
 (0, import_mongo.connect)("PitchPlot");
 const staticDir = import_path.default.join(__dirname, "../../proto/public");
 app.use(import_express.default.static(staticDir));
-app.get("/users", async (req, res) => {
-  try {
-    const users = await import_user_svc.default.getAllUsers();
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch users." });
-  }
+console.log("Serving static files from:", staticDir);
+app.use(import_express.default.json());
+app.use("/api/users", import_users.default);
+app.use("/api/posts", import_posts.default);
+app.get("/feed", (req, res) => {
+  const feedPage = import_feedPage.FeedPage.render();
+  res.set("Content-Type", "text/html").send(feedPage);
 });
-app.get("/user/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const user = await import_user_svc.default.getUserById(id);
-    res.json(user);
-  } catch (error) {
-    res.status(404).json({ error: "User not found." });
-  }
-});
-app.post("/user", async (req, res) => {
-  try {
-    const newUser = await import_user_svc.default.addUser(req.body);
-    res.status(201).json(newUser);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to create user." });
-  }
-});
-app.get("/posts", async (req, res) => {
-  try {
-    const posts = await import_post_svc.default.getAllPosts();
-    res.json(posts);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch posts." });
-  }
-});
-app.get("/post/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    const post = await import_post_svc.default.getPostById(id);
-    res.json(post);
-  } catch (error) {
-    res.status(404).json({ error: "Post not found." });
-  }
-});
-app.post("/post", async (req, res) => {
-  try {
-    const newPost = await import_post_svc.default.addPost(req.body);
-    console.log(req.body);
-    console.log(res);
-    res.status(201).json(newPost);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Failed to create post." });
-  }
-});
-app.get("/comments/:postId", async (req, res) => {
-  const { postId } = req.params;
-  try {
-    const comments = await import_comment_svc.default.getCommentsByPostId(postId);
-    res.json(comments);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch comments." });
-  }
-});
-app.post("/comment", async (req, res) => {
-  try {
-    const newComment = await import_comment_svc.default.addComment(req.body);
-    res.status(201).json(newComment);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to create comment." });
-  }
-});
-app.route("/user/profile/:id").get(async (req, res) => {
-  const { id } = req.params;
-  try {
-    const user = await import_user_svc.default.getUserById(id);
+app.get("/profile/:userId", (req, res) => {
+  const { userId } = req.params;
+  import_user_svc.default.getUserById(userId).then((user) => {
     if (!user) {
-      res.status(404).json({ error: "User not found." });
+      res.status(404).send("User not found");
       return;
     }
-    console.log(id);
-    const posts = await import_post_svc.default.getUserPosts(id);
-    console.log(posts);
-    res.set("Content-Type", "text/html").send(import_userProfilePage.UserProfilePage.render({ user, posts }));
-  } catch (error) {
-    res.status(500).json({ error: "Failed to load user profile." });
-  }
+    return import_post_svc.default.getUserPosts(userId).then((posts) => {
+      const profilePage = import_userProfilePage.UserProfilePage.render({ userId });
+      res.set("Content-Type", "text/html").send(profilePage);
+    });
+  }).catch((error) => {
+    console.error("Error fetching data:", error);
+    res.status(500).send("An error occurred while loading the profile");
+  });
 });
+const asyncHandler = (fn) => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
+app.post(
+  "/api/posts",
+  asyncHandler(async (req, res) => {
+    const { userId = "user1", content, link } = req.body;
+    if (!content) {
+      return res.status(400).json({ error: "Content is required" });
+    }
+    const newPost = {
+      id: (Math.random() * 1e5).toString(),
+      // Generate ID
+      userId,
+      content,
+      link: link || null,
+      // Optional link field
+      createdAt: /* @__PURE__ */ new Date(),
+      likesCount: 0,
+      likedBy: [],
+      comments: []
+    };
+    const savedPost = await import_post_svc.default.addPost(newPost);
+    res.status(201).json(savedPost);
+  })
+);
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });

@@ -49,3 +49,63 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const postsContainer = document.getElementById("postsContainer");
+
+  if (postsContainer) {
+    try {
+      const response = await fetch("/api/posts");
+      const posts = await response.json();
+
+      posts.forEach((post) => {
+        const postElement = document.createElement("user-post");
+        postElement.setAttribute("user-pic", "images/user.jpg");
+        postElement.innerHTML = `
+          <span slot="username">${post.userId}</span>
+          <span slot="date">${new Date(post.createdAt).toDateString()}</span>
+          <span slot="content">${post.content}</span>
+          <span slot="likes">${post.likesCount}</span>
+          <div slot="comments">${post.comments.length} Comments</div>
+        `;
+        postsContainer.appendChild(postElement);
+      });
+    } catch (error) {
+      console.error("Error loading posts:", error);
+    }
+  }
+});
+
+document
+  .getElementById("createPostForm")
+  .addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const content = document.getElementById("postContent").value;
+    const imageFile = document.getElementById("postImage").files[0];
+
+    const formData = new FormData();
+    formData.append("content", content);
+    if (imageFile) formData.append("image", imageFile);
+
+    const response = await fetch("/api/posts", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      const newPost = await response.json();
+      const feedList = document.querySelector("feed-list");
+      feedList.addPost(newPost);
+      closeModal("postModal");
+    } else {
+      console.error("Failed to create post");
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const createPostBtn = document.getElementById("createPostBtn");
+    createPostBtn.addEventListener("click", () => {
+      openModal("postModal"); // Call openModal function from modal.js
+    });
+  });

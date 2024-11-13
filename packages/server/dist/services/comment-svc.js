@@ -18,36 +18,25 @@ var __copyProps = (to, from, except, desc) => {
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var comment_svc_exports = {};
 __export(comment_svc_exports, {
-  addComment: () => addComment,
-  default: () => comment_svc_default,
-  deleteComment: () => deleteComment,
-  getCommentsByPostId: () => getCommentsByPostId
+  default: () => comment_svc_default
 });
 module.exports = __toCommonJS(comment_svc_exports);
 var import_mongoose = require("mongoose");
 const CommentSchema = new import_mongoose.Schema(
   {
-    postId: { type: import_mongoose.Schema.Types.String, ref: "Post", required: true },
-    userId: { type: import_mongoose.Schema.Types.String, ref: "User", required: true },
+    id: { type: String, required: true, unique: true },
+    postId: { type: String, required: true },
+    userId: { type: String, required: true },
     content: { type: String, required: true },
     createdAt: { type: Date, default: Date.now }
   },
   { collection: "comments" }
 );
 const CommentModel = (0, import_mongoose.model)("Comment", CommentSchema);
-async function getCommentsByPostId(postId) {
-  return CommentModel.find({ postId });
+function index() {
+  return CommentModel.find();
 }
-async function addComment(comment) {
-  return CommentModel.create(comment);
+function get(commentId) {
+  return CommentModel.findOne({ id: commentId }).exec();
 }
-async function deleteComment(id) {
-  return CommentModel.findByIdAndDelete(id);
-}
-var comment_svc_default = { getCommentsByPostId, addComment, deleteComment };
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  addComment,
-  deleteComment,
-  getCommentsByPostId
-});
+var comment_svc_default = { index, get };
