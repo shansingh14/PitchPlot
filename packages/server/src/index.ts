@@ -67,8 +67,11 @@ app.get("/post/:id", async (req: Request, res: Response) => {
 app.post("/post", async (req: Request, res: Response) => {
   try {
     const newPost = await PostService.addPost(req.body);
+    console.log(req.body);
+    console.log(res);
     res.status(201).json(newPost);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Failed to create post." });
   }
 });

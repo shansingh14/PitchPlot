@@ -1,19 +1,16 @@
 import { Schema, model, Document, Types } from "mongoose";
 import { Post } from "../models/post";
 
-// Define Post schema with ObjectId types for creatorId and comments
 const PostSchema = new Schema<Post>(
   {
-    content: { type: String, required: true },
+    id: { type: String },
+    userId: {type: String},
+    content: { type: String},
     image: { type: String, default: "" },
-    userId: {
-      type: Schema.Types.ObjectId as any,
-      ref: "User",
-      required: true,
-    },
     createdAt: { type: Date, default: Date.now },
     likesCount: { type: Number, default: 0 },
-    comments: [{ type: Schema.Types.ObjectId as any, ref: "Comment" }], // Updated comments type
+    likedBy: [{ type: Schema.Types.ObjectId as any, ref: "User" }],
+    comments: [{ type: Schema.Types.ObjectId as any, ref: "Comment" }],
   },
   { collection: "posts" }
 );

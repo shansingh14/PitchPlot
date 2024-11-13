@@ -30,17 +30,14 @@ module.exports = __toCommonJS(post_svc_exports);
 var import_mongoose = require("mongoose");
 const PostSchema = new import_mongoose.Schema(
   {
-    content: { type: String, required: true },
+    id: { type: String },
+    userId: { type: String },
+    content: { type: String },
     image: { type: String, default: "" },
-    userId: {
-      type: import_mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true
-    },
     createdAt: { type: Date, default: Date.now },
     likesCount: { type: Number, default: 0 },
+    likedBy: [{ type: import_mongoose.Schema.Types.ObjectId, ref: "User" }],
     comments: [{ type: import_mongoose.Schema.Types.ObjectId, ref: "Comment" }]
-    // Updated comments type
   },
   { collection: "posts" }
 );

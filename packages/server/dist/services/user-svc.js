@@ -29,6 +29,7 @@ module.exports = __toCommonJS(user_svc_exports);
 var import_mongoose = require("mongoose");
 const UserSchema = new import_mongoose.Schema(
   {
+    id: { type: String },
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true },
     passwordHash: { type: String, required: true },

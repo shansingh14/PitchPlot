@@ -6,6 +6,4 @@ export interface User {
   profilePic?: string;
   bio?: string
   createdAt: Date;
-  following: string[];
-  followers: string[];
 }

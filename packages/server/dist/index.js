@@ -78,8 +78,11 @@ app.get("/post/:id", async (req, res) => {
 app.post("/post", async (req, res) => {
   try {
     const newPost = await import_post_svc.default.addPost(req.body);
+    console.log(req.body);
+    console.log(res);
     res.status(201).json(newPost);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Failed to create post." });
   }
 });
