@@ -39,8 +39,18 @@ class UserProfilePage {
       body: import_server.html`
         <nav-bar></nav-bar>
         <user-profile src="/api/users/${userId}"></user-profile>
-        <feed-list src="/api/posts?user=${userId}"></feed-list>
+        <feed-list src="/api/posts"></feed-list>
       `,
+      scripts: [
+        `
+        import { define } from "@calpoly/mustang";
+        import { UserPost } from "/scripts/user-post.js";
+
+        define({
+          "user-post": UserPost,
+        });
+        `
+      ],
       stylesheets: [
         "/styles/profile.css",
         "/styles/navbar.css",

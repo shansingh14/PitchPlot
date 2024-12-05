@@ -30,15 +30,23 @@ var import_post_svc = __toESM(require("./services/post-svc"));
 var import_mongo = require("./services/mongo");
 var import_users = __toESM(require("./routes/users"));
 var import_posts = __toESM(require("./routes/posts"));
+var import_auth = __toESM(require("./routes/auth"));
+var import_auth2 = require("./pages/auth");
 const app = (0, import_express.default)();
 const port = process.env.PORT || 3e3;
 (0, import_mongo.connect)("PitchPlot");
+app.use(import_express.default.json({ limit: "30mb" }));
 const staticDir = import_path.default.join(__dirname, "../../proto/public");
 app.use(import_express.default.static(staticDir));
 console.log("Serving static files from:", staticDir);
 app.use(import_express.default.json());
-app.use("/api/users", import_users.default);
-app.use("/api/posts", import_posts.default);
+app.use("/auth", import_auth.default);
+app.use("/api/users", import_auth.authenticateUser, import_users.default);
+app.use("/api/posts", import_auth.authenticateUser, import_posts.default);
+app.get("/login", (req, res) => {
+  const page = new import_auth2.LoginPage();
+  res.set("Content-Type", "text/html").send(page.render());
+});
 app.get("/feed", (req, res) => {
   const feedPage = import_feedPage.FeedPage.render();
   res.set("Content-Type", "text/html").send(feedPage);
@@ -65,14 +73,18 @@ const asyncHandler = (fn) => (req, res, next) => {
 app.post(
   "/api/posts",
   asyncHandler(async (req, res) => {
-    const { userId = "user1", content, link } = req.body;
+    const { userId, content, image, link } = req.body;
     if (!content) {
       return res.status(400).json({ error: "Content is required" });
     }
+    const imageBuffer = image ? Buffer.from(image, "base64") : void 0;
+    console.log(image);
+    console.log(imageBuffer);
     const newPost = {
       id: (Math.random() * 1e5).toString(),
       userId,
       content,
+      image: imageBuffer,
       link: link || null,
       createdAt: /* @__PURE__ */ new Date(),
       likesCount: 0,

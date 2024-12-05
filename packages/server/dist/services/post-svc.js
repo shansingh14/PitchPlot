@@ -22,19 +22,32 @@ __export(post_svc_exports, {
 });
 module.exports = __toCommonJS(post_svc_exports);
 var import_mongoose = require("mongoose");
+var import_comment_svc = require("./comment-svc");
 const PostSchema = new import_mongoose.Schema({
   id: { type: String, required: true, unique: true },
   userId: { type: String, required: true },
   content: { type: String, required: true },
-  image: { type: String },
+  image: { type: Buffer, default: null },
   createdAt: { type: Date, default: Date.now },
   likesCount: { type: Number, default: 0 },
   likedBy: [{ type: String }],
-  comments: [{ type: String }]
+  comments: [{ type: import_mongoose.Schema.Types.ObjectId, ref: "Comment" }]
 });
 const PostModel = (0, import_mongoose.model)("Post", PostSchema);
-function getUserPosts(userId) {
-  return PostModel.find({ userId }).exec();
+async function getUserPosts(userId) {
+  const posts = await PostModel.find({ userId }).exec();
+  console.log("backend");
+  console.log(posts.map((post) => post.image));
+  return posts.map((post) => ({
+    id: post.id,
+    userId: post.userId,
+    content: post.content,
+    image: post.image ? post.image.toString("base64").startsWith("data:image/") ? post.image.toString("base64") : `data:image/jpeg;base64,${post.image.toString("base64")}` : null,
+    createdAt: post.createdAt,
+    likesCount: post.likesCount,
+    likedBy: post.likedBy,
+    comments: post.comments
+  }));
 }
 function addPost(newPost) {
   return PostModel.create(newPost);
@@ -54,6 +67,38 @@ function updatePost(postId, updatedData) {
 function deletePost(postId) {
   return PostModel.deleteOne({ id: postId }).exec();
 }
+function addCommentToPost(postId, commentId) {
+  return PostModel.findOneAndUpdate(
+    { id: postId },
+    { $push: { comments: commentId._id } },
+    { new: true }
+  ).exec().then((updatedPost) => {
+    if (!updatedPost) {
+      console.error(`No post found with id: ${postId}`);
+      return null;
+    }
+    console.log("Updated Post:", updatedPost);
+    return updatedPost;
+  }).catch((error) => {
+    console.error("Error updating post:", error);
+    throw error;
+  });
+}
+async function getCommentsByPost(postId) {
+  try {
+    const post = await PostModel.findOne({ id: postId }).exec();
+    if (!post) {
+      throw new Error(`Post with id ${postId} not found`);
+    }
+    const comments = await import_comment_svc.CommentModel.find({
+      _id: { $in: post.comments }
+    }).exec();
+    return comments;
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    throw error;
+  }
+}
 var post_svc_default = {
   index,
   getPostById,
@@ -61,5 +106,7 @@ var post_svc_default = {
   updatePost,
   deletePost,
   getUserPosts,
-  addPost
+  addPost,
+  addCommentToPost,
+  getCommentsByPost
 };

@@ -26,40 +26,50 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-var feedPage_exports = {};
-__export(feedPage_exports, {
-  FeedPage: () => FeedPage
+var auth_exports = {};
+__export(auth_exports, {
+  LoginPage: () => LoginPage
 });
-module.exports = __toCommonJS(feedPage_exports);
+module.exports = __toCommonJS(auth_exports);
 var import_renderPage = __toESM(require("./renderPage"));
 var import_server = require("@calpoly/mustang/server");
-class FeedPage {
-  static render() {
+class LoginPage {
+  render() {
     return (0, import_renderPage.default)({
-      body: import_server.html`
-        <nav-bar></nav-bar>
-        <create-post></create-post>
-        <feed-list src="/api/posts"></feed-list>
-      `,
       scripts: [
         `
-        import { define } from "@calpoly/mustang";
-        import { UserPost } from "/scripts/user-post.js";
+        import { define, Auth } from "@calpoly/mustang";
+        import { LoginForm } from "/scripts/login-form.js";
 
         define({
-          "user-post": UserPost,
-        });
+          "mu-auth": Auth.Provider,
+          "login-form": LoginForm
+        })
         `
       ],
-      stylesheets: [
-        "/styles/feedpage.css",
-        "/styles/navbar.css",
-        "/styles/token.css"
-      ]
+      body: import_server.html`
+        <body>
+          <mu-auth provides="blazing:auth">
+            <article>
+              <blz-header></blz-header>
+              <main class="page">
+                <login-form api="/auth/login">
+                  <h3 slot="title">Sign in and go places!</h3>
+                </login-form>
+                <p class="register">
+                  Or did you want to
+                  <a href="./register"> register as a new user </a>
+                  ?
+                </p>
+              </main>
+            </article>
+          </mu-auth>
+        </body>
+      `
     });
   }
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  FeedPage
+  LoginPage
 });

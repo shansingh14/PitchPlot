@@ -18,6 +18,7 @@ var __copyProps = (to, from, except, desc) => {
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var comment_svc_exports = {};
 __export(comment_svc_exports, {
+  CommentModel: () => CommentModel,
   default: () => comment_svc_default
 });
 module.exports = __toCommonJS(comment_svc_exports);
@@ -39,4 +40,15 @@ function index() {
 function get(commentId) {
   return CommentModel.findOne({ id: commentId }).exec();
 }
-var comment_svc_default = { index, get };
+function create(commentData) {
+  const comment = new CommentModel(commentData);
+  return comment.save();
+}
+function getCommentsByPost(postId) {
+  return CommentModel.find({ postId }).exec();
+}
+var comment_svc_default = { index, get, create, getCommentsByPost };
+// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
+  CommentModel
+});

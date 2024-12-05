@@ -9,11 +9,16 @@ import PostService from "./services/post-svc";
 import { connect } from "./services/mongo";
 import usersRouter from "./routes/users";
 import postsRouter from "./routes/posts";
+import auth, { authenticateUser } from "./routes/auth";
+import { LoginPage } from "./pages/auth";
+import jwt from "jsonwebtoken";
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 connect("PitchPlot");
+
+app.use(express.json({ limit: "30mb" }));
 
 const staticDir = path.join(__dirname, "../../proto/public");
 app.use(express.static(staticDir));
@@ -21,9 +26,15 @@ app.use(express.static(staticDir));
 console.log("Serving static files from:", staticDir);
 
 app.use(express.json());
+app.use("/auth", auth);
+app.use("/api/users", authenticateUser, usersRouter);
+app.use("/api/posts", authenticateUser, postsRouter);
 
-app.use("/api/users", usersRouter);
-app.use("/api/posts", postsRouter);
+
+app.get("/login", (req: Request, res: Response) => {
+  const page = new LoginPage();
+  res.set("Content-Type", "text/html").send(page.render());
+});
 
 app.get("/feed", (req: Request, res: Response) => {
   const feedPage = FeedPage.render();
@@ -60,17 +71,22 @@ const asyncHandler =
 app.post(
   "/api/posts",
   asyncHandler(async (req: Request, res: Response) => {
-    const { userId = "user1", content, link } = req.body;
+    const {userId, content, image, link } = req.body;
 
     if (!content) {
       return res.status(400).json({ error: "Content is required" });
     }
+    const imageBuffer = image ? Buffer.from(image, "base64") : undefined;
+
+    console.log(image);
+    console.log(imageBuffer);
 
     const newPost = {
       id: (Math.random() * 100000).toString(),
       userId,
       content,
-      link: link || null, 
+      image: imageBuffer,
+      link: link || null,
       createdAt: new Date(),
       likesCount: 0,
       likedBy: [],

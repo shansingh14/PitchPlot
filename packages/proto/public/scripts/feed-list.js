@@ -95,8 +95,17 @@ export class FeedList extends HTMLElement {
   }
 
   async hydrate(url) {
+    console.log(url);
     try {
-      const response = await fetch(url);
+      const userToken = localStorage.getItem("mu:auth:jwt");
+      const user = JSON.parse(atob(userToken.split(".")[1]));
+      const userId = user.username;
+      const response = await fetch(`${url}/user/${userId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("mu:auth:jwt")}`,
+        },
+      });
       if (!response.ok)
         throw new Error(`Failed to fetch data: ${response.status}`);
       const posts = await response.json();
@@ -109,26 +118,25 @@ export class FeedList extends HTMLElement {
   renderPosts(posts) {
     const fragment = document.createDocumentFragment();
     posts.forEach((post) => {
-      const postElement = document.createElement("div");
-      postElement.className = "post";
+      const postElement = document.createElement("user-post");
+      postElement.setAttribute("post-id", post.id);
+      postElement.setAttribute("user-pic", "https://picsum.photos/200/400");
+
+      if (post.image) {
+        postElement.setAttribute(
+          "post-image",
+          "https://picsum.photos/200/400"
+        );
+      } else {
+        postElement.removeAttribute("post-image");
+      }
+      postElement.setAttribute("slot", "posts");
 
       postElement.innerHTML = `
-        <div class="post-header">
-          <span class="username">${post.userId}</span>
-          <span class="date">${new Date(
-            post.createdAt
-          ).toLocaleDateString()}</span>
-        </div>
-        <div class="post-content">${post.content}</div>
-        ${
-          post.link
-            ? `<a href="${post.link}" class="post-link">${post.link}</a>`
-            : ""
-        }
-        <div class="buttons">
-          <button class="like-button">Like</button>
-          <button class="comment-button">Comment</button>
-        </div>
+        <span slot="username">${post.userId}</span>
+        <span slot="date">${new Date(post.createdAt).toLocaleDateString()}</span>
+        <p slot="content">${post.content}</p>
+        ${post.link ? `<a slot="link">${post.link}</a>` : ""}
       `;
 
       fragment.appendChild(postElement);

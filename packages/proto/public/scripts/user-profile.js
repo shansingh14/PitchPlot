@@ -6,17 +6,18 @@ export class UserProfile extends HTMLElement {
       <div class="profile">
         <img
           class="profile-pic"
-          src="../images/clairo-album.webp"
+          src="https://picsum.photos/200"
           alt="Profile Picture"
         />
         <div class="profile-info">
-          <h2><slot name="name">User Name</slot></h2>
-          <p><slot name="bio">User Bio</slot></p>
+          <h2 class="username"><slot name="name">User Name</slot></h2>
+          <p class="bio"><slot name="bio">User Bio</slot></p>
           <p>
             <strong>Location:</strong> <slot name="location">Location</slot>
           </p>
           <p>
-            <strong>Member Since:</strong> <slot name="member-since">Date</slot>
+            <strong>Member Since:</strong>
+            <slot name="member-since">Date</slot>
           </p>
           <p><strong>Friends:</strong> <slot name="friends">0</slot></p>
         </div>
@@ -75,34 +76,43 @@ export class UserProfile extends HTMLElement {
     if (this.src) this.hydrate(this.src);
   }
 
-  async hydrate(url) {
-    try {
-      const response = await fetch(url);
-      if (!response.ok)
-        throw new Error(`Failed to fetch data: ${response.status}`);
-      const data = await response.json();
-      this.renderSlots(data);
-    } catch (error) {
-      console.error("Error loading user profile data:", error);
-    }
+  hydrate(url) {
+    console.log(url);
+    fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("mu:auth:jwt")}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok)
+          throw new Error(`Failed to fetch user data: ${res.status}`);
+        return res.json();
+      })
+      .then((data) => this.updateProfile(data))
+      .catch((error) => console.error(error));
   }
 
-  renderSlots(data) {
-    const slotMappings = {
-      name: data.username,
-      bio: data.bio,
-      "member-since": data.createdAt,
-      friends: data.friendCount,
+  updateProfile(userData) {
+    const mappings = {
+      name: userData.userId || "User Name",
+      bio: userData.bio || "No bio available.",
+      location: userData.location || "Location unknown",
+      "member-since": "07/13/2024",
+      friends: userData.friendCount || "0",
     };
 
-    Object.entries(slotMappings).forEach(([slotName, value]) => {
-      const slotElement = document.createElement("span");
-      slotElement.slot = slotName;
-      slotElement.textContent = value;
-      this.appendChild(slotElement);
+    Object.entries(mappings).forEach(([slotName, content]) => {
+      // Find or create the slot element
+      let slotElement = this.querySelector(`[slot="${slotName}"]`);
+      if (!slotElement) {
+        // Create a new span element if one doesn't exist
+        slotElement = document.createElement("span");
+        slotElement.setAttribute("slot", slotName);
+        this.appendChild(slotElement);
+      }
+      slotElement.textContent = content;
     });
-
-    this.shadowRoot.querySelector(".profile-pic").src = data.profilePic || "";
   }
 }
 

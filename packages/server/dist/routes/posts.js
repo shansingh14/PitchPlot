@@ -33,6 +33,7 @@ __export(posts_exports, {
 module.exports = __toCommonJS(posts_exports);
 var import_express = __toESM(require("express"));
 var import_post_svc = __toESM(require("../services/post-svc"));
+var import_comment_svc = require("../services/comment-svc");
 const router = import_express.default.Router();
 router.get("/", (_, res) => {
   import_post_svc.default.index().then((posts) => res.json(posts)).catch((err) => res.status(500).send(err));
@@ -56,6 +57,16 @@ router.get("/:postId", (req, res) => {
     }
   }).catch((err) => res.status(500).send(err));
 });
+router.get("/:postId/comments", async (req, res) => {
+  const { postId } = req.params;
+  try {
+    const comments = await import_post_svc.default.getCommentsByPost(postId);
+    res.status(200).json(comments);
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    res.status(500).json({ error: "Failed to fetch comments" });
+  }
+});
 router.post("/", (req, res) => {
   import_post_svc.default.createPost(req.body).then((newPost) => res.status(201).json(newPost)).catch((err) => res.status(500).send(err));
 });
@@ -78,5 +89,32 @@ router.delete("/:postId", (req, res) => {
       res.status(404).send("Post not found");
     }
   }).catch((err) => res.status(500).send(err));
+});
+router.post("/:postId/comments", async (req, res) => {
+  const { postId } = req.params;
+  const { userId, content } = req.body;
+  if (!content || !userId) {
+    res.status(400).json({ error: "Content and userId are required" });
+  }
+  try {
+    const newComment = new import_comment_svc.CommentModel({
+      id: "comment" + Math.floor(Math.random() * 1e4),
+      postId,
+      userId,
+      content,
+      createdAt: /* @__PURE__ */ new Date()
+    });
+    const savedComment = await newComment.save();
+    if (!savedComment) {
+      res.status(500).json({ error: "_id is not assigned" });
+    } else {
+      await import_post_svc.default.addCommentToPost(postId, savedComment);
+    }
+    res.status(201).json(savedComment);
+  } catch (error) {
+    console.error("Error creating comment:", error);
+    console.log(postId, userId, content);
+    res.status(500).json({ error: "Failed to create comment" });
+  }
 });
 var posts_default = router;

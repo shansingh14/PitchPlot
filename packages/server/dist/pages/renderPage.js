@@ -36,6 +36,7 @@ import { FeedList } from "/scripts/feed-list.js";
 import { NavBar } from "/scripts/nav-bar.js";
 import { CreatePostButton } from "/scripts/create-post.js";
 import { ModalComponent } from "/scripts/modal-component.js";
+import { UserPost } from "/scripts/user-post.js";
 
 define({
   "user-profile": UserProfile,
@@ -43,6 +44,7 @@ define({
   "nav-bar": NavBar,
   "create-post": CreatePostButton,
   "modal-component": ModalComponent,
+  "user-post" : UserPost,
 });
     `
   ],

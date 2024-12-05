@@ -16,12 +16,10 @@ export class UserPost extends HTMLElement {
           <a class="post-link" href="#" target="_blank"
             ><slot name="link"></slot
           ></a>
-          <img
-            class="post-image"
-            src=""
-            alt="Post Image"
-            style="display: none;"
-          />
+          <a href="https://open.spotify.com/">
+            <img class="post-image" style="display: none; max-width: 40%; border-radius: 8px;" />
+          </a>
+      <div class="buttons">
         </div>
         <div class="post-actions">
           <button class="like-button">Like</button>
@@ -30,7 +28,7 @@ export class UserPost extends HTMLElement {
         <div class="post-comments">
           <slot name="comments">No comments yet...</slot>
         </div>
-        <div class="comment-input-container">
+        <div class="comment-input-container" style="display: none;">
           <textarea
             class="comment-input"
             placeholder="Write a comment..."
@@ -78,7 +76,7 @@ export class UserPost extends HTMLElement {
     .post-image {
       width: 100%;
       max-height: 300px;
-      object-fit: cover;
+      object-fit: fill;
       border-radius: 8px;
       margin-top: 10px;
     }
@@ -141,12 +139,14 @@ export class UserPost extends HTMLElement {
   connectedCallback() {
     const userPic = this.getAttribute("user-pic");
     const postImage = this.getAttribute("post-image");
+    const postId = this.getAttribute("post-id");
+    const userId = parseJwt(localStorage.getItem("mu:auth:jwt")).username;
 
     if (userPic) this.shadowRoot.querySelector(".user-pic").src = userPic;
 
     const postImageElement = this.shadowRoot.querySelector(".post-image");
     if (postImage) {
-      postImageElement.src = postImage;
+      postImageElement.src = "https://picsum.photos/200";
       postImageElement.style.display = "block";
     } else {
       postImageElement.style.display = "none";
@@ -159,6 +159,32 @@ export class UserPost extends HTMLElement {
     const commentInput = this.shadowRoot.querySelector(".comment-input");
     const commentsSection = this.shadowRoot.querySelector(".post-comments");
 
+    // Function to render comments
+    const renderComments = (comments) => {
+      commentsSection.innerHTML = "";
+      if (comments.length === 0) {
+        commentsSection.innerHTML = `<p class="no-comments">No comments yet...</p>`;
+      } else {
+        comments.forEach((comment) => {
+          const commentElement = document.createElement("p");
+          commentElement.innerHTML = `<strong>${comment.userId}:</strong> ${comment.content}`;
+          commentsSection.appendChild(commentElement);
+        });
+      }
+    };
+
+    // Fetch and render comments initially
+    fetch(`/api/posts/${postId}/comments`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("mu:auth:jwt")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((comments) => renderComments(comments))
+      .catch((error) => console.error("Failed to load comments:", error));
+
+    // Toggle comment input visibility
     commentButton.addEventListener("click", () => {
       const inputContainer = this.shadowRoot.querySelector(
         ".comment-input-container"
@@ -167,14 +193,60 @@ export class UserPost extends HTMLElement {
         inputContainer.style.display === "none" ? "block" : "none";
     });
 
+    // Handle comment submission
     commentSubmitButton.addEventListener("click", () => {
       const commentText = commentInput.value.trim();
       if (commentText) {
-        const comment = document.createElement("p");
-        comment.innerHTML = `<strong>You:</strong> ${commentText}`;
-        commentsSection.appendChild(comment);
-        commentInput.value = "";
+        fetch(`/api/posts/${postId}/comments`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("mu:auth:jwt")}`,
+          },
+          body: JSON.stringify({
+            content: commentText,
+            userId: userId,
+          }),
+        })
+          .then((res) => {
+            if (res.ok) return res.json();
+            else throw new Error("Failed to post comment");
+          })
+          .then((newComment) => {
+            const noCommentsMessage =
+              commentsSection.querySelector(".no-comments");
+            if (noCommentsMessage) noCommentsMessage.remove();
+
+            const commentElement = document.createElement("p");
+            commentElement.innerHTML = `<strong>${newComment.userId}:</strong> ${newComment.content}`;
+            commentsSection.appendChild(commentElement);
+
+            // Clear the input field and hide the input container
+            commentInput.value = "";
+            const inputContainer = this.shadowRoot.querySelector(
+              ".comment-input-container"
+            );
+            inputContainer.style.display = "none";
+          })
+          .catch((error) => console.error("Error posting comment:", error));
       }
     });
+  }
+}
+
+function parseJwt(token) {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    return JSON.parse(jsonPayload);
+  } catch (err) {
+    console.error("Failed to parse JWT:", err);
+    return null;
   }
 }

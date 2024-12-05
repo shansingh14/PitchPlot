@@ -9,6 +9,16 @@ export class FeedPage {
         <create-post></create-post>
         <feed-list src="/api/posts"></feed-list>
       `,
+      scripts: [
+        `
+        import { define } from "@calpoly/mustang";
+        import { UserPost } from "/scripts/user-post.js";
+
+        define({
+          "user-post": UserPost,
+        });
+        `,
+      ],
       stylesheets: [
         "/styles/feedpage.css",
         "/styles/navbar.css",

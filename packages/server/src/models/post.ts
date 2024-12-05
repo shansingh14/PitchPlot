@@ -4,9 +4,9 @@ export interface Post {
   id: string;
   userId: string; 
   content: string;
-  image?: string;
+  image?: Buffer | string | null;
   createdAt: Date;
   likesCount: number;
   likedBy: string[]; 
-  comments: PostComment[];
+  comments: string[];
 }

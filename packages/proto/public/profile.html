@@ -41,7 +41,7 @@
     const defaultUserId = "user1";
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get("userId") || defaultUserId;
-
+    console.log(userId)
     document.querySelector("user-profile").setAttribute("src", `/api/users/${userId}`);
     document.querySelector("feed-list").setAttribute("src", `/api/posts/user/${userId}`);
   </script>

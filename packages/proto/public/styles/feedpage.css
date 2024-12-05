@@ -94,3 +94,9 @@ main {
   background-color: var(--color-accent-hover);
 }
 
+.post-comments p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+
