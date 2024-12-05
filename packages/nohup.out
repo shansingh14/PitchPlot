@@ -1,0 +1,31 @@
+
+> proto@1.0.0 start
+> http-server -p 3000
+
+node:events:497
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at Server.setupListenHandle [as _listen2] (node:net:1904:16)
+    at listenInCluster (node:net:1961:12)
+    at doListen (node:net:2135:7)
+    at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1940:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+
+Node.js v20.18.0
+npm error Lifecycle script `start` failed with error:
+npm error code 1
+npm error path /home/ssing150/PitchPlot/packages/proto
+npm error workspace proto@1.0.0
+npm error location /home/ssing150/PitchPlot/packages/proto
+npm error command failed
+npm error command sh -c http-server -p 3000

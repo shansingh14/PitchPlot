@@ -1,0 +1,27 @@
+
+> server@1.0.0 start:proto
+> cross-env STATIC=../proto/public npm run start
+
+
+> server@1.0.0 start
+> npm run build && npm run start:node
+
+
+> server@1.0.0 build
+> npx etsc
+
+Using default config
+Built in: 65.994ms
+
+> server@1.0.0 start:node
+> node dist/index.js
+
+Serving static files from: /home/ssing150/PitchPlot/packages/proto/public
+Server running at http://localhost:3000
+npm error Lifecycle script `start:proto` failed with error:
+npm error code 1
+npm error path /home/ssing150/PitchPlot/packages/server
+npm error workspace server@1.0.0
+npm error location /home/ssing150/PitchPlot/packages/server
+npm error command failed
+npm error command sh -c cross-env STATIC=../proto/public npm run start
