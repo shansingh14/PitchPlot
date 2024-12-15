@@ -114,6 +114,7 @@ export class ModalComponent extends HTMLElement {
     }
 
     this.closeModal();
+    window.location.reload();
   }
 }
 

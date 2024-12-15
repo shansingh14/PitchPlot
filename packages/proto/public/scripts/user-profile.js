@@ -20,6 +20,18 @@ export class UserProfile extends HTMLElement {
             <slot name="member-since">Date</slot>
           </p>
           <p><strong>Friends:</strong> <slot name="friends">0</slot></p>
+          <button class="edit-button">Edit</button>
+        </div>
+      </div>
+      <div class="modal" style="display: none;">
+        <div class="modal-content">
+          <h3>Edit Profile</h3>
+          <label for="bio-input">Bio:</label>
+          <textarea id="bio-input"></textarea>
+          <label for="location-input">Location:</label>
+          <input id="location-input" type="text" />
+          <button id="save-button">Save</button>
+          <button id="close-button">Close</button>
         </div>
       </div>
     </template>
@@ -43,11 +55,9 @@ export class UserProfile extends HTMLElement {
       margin-right: 20px;
       border: 3px solid var(--color-accent);
     }
-
     .profile-info {
       align-items: center;
     }
-
     .profile-info h2 {
       margin: 0;
       font-size: 20px;
@@ -61,6 +71,43 @@ export class UserProfile extends HTMLElement {
     .profile-info p strong {
       color: var(--color-text-primary);
     }
+    .edit-button {
+      margin-top: 10px;
+      padding: 5px 10px;
+      background-color: var(--color-accent);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+      width: 300px;
+    }
+    #save-button,
+    #close-button {
+      margin-top: 10px;
+      padding: 5px 10px;
+      background-color: var(--color-accent);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
   `;
 
   constructor() {
@@ -68,51 +115,84 @@ export class UserProfile extends HTMLElement {
     shadow(this).template(UserProfile.template).styles(UserProfile.styles);
   }
 
-  get src() {
-    return this.getAttribute("src");
-  }
-
   connectedCallback() {
+    this.shadowRoot
+      .querySelector(".edit-button")
+      .addEventListener("click", () => this.openModal());
+    this.shadowRoot
+      .querySelector("#save-button")
+      .addEventListener("click", () => this.saveChanges());
+    this.shadowRoot
+      .querySelector("#close-button")
+      .addEventListener("click", () => this.closeModal());
     if (this.src) this.hydrate(this.src);
   }
 
-  hydrate(url) {
-    console.log(url);
-    fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("mu:auth:jwt")}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok)
-          throw new Error(`Failed to fetch user data: ${res.status}`);
-        return res.json();
-      })
-      .then((data) => this.updateProfile(data))
-      .catch((error) => console.error(error));
+  openModal() {
+    const modal = this.shadowRoot.querySelector(".modal");
+    const bioInput = this.shadowRoot.querySelector("#bio-input");
+    const locationInput = this.shadowRoot.querySelector("#location-input");
+
+    modal.style.display = "flex";
+
+    bioInput.value = this.shadowRoot.querySelector("[slot='bio']").textContent;
+    locationInput.value =
+      this.shadowRoot.querySelector("[slot='location']").textContent;
   }
 
-  updateProfile(userData) {
-    const mappings = {
-      name: userData.userId || "User Name",
-      bio: userData.bio || "No bio available.",
-      location: userData.location || "Location unknown",
-      "member-since": "07/13/2024",
-      friends: userData.friendCount || "0",
-    };
+  closeModal() {
+    this.shadowRoot.querySelector(".modal").style.display = "none";
+  }
 
-    Object.entries(mappings).forEach(([slotName, content]) => {
-      // Find or create the slot element
-      let slotElement = this.querySelector(`[slot="${slotName}"]`);
-      if (!slotElement) {
-        // Create a new span element if one doesn't exist
-        slotElement = document.createElement("span");
-        slotElement.setAttribute("slot", slotName);
-        this.appendChild(slotElement);
+  saveChanges() {
+    const bioInput = this.shadowRoot.querySelector("#bio-input").value.trim();
+    const locationInput = this.shadowRoot
+      .querySelector("#location-input")
+      .value.trim();
+    const modal = this.shadowRoot.querySelector(".modal");
+
+    fetch(
+      `/api/users/${parseJwt(localStorage.getItem("mu:auth:jwt")).username}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("mu:auth:jwt")}`,
+        },
+        body: JSON.stringify({
+          bio: bioInput,
+          location: locationInput,
+        }),
       }
-      slotElement.textContent = content;
-    });
+    )
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to update profile");
+        return res.json();
+      })
+      .then(() => {
+        this.shadowRoot.querySelector("[slot='bio']").textContent = bioInput;
+        this.shadowRoot.querySelector("[slot='location']").textContent =
+          locationInput;
+        modal.style.display = "none";
+      })
+      .catch((error) => console.error("Error updating profile:", error));
+  }
+}
+
+function parseJwt(token) {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    return JSON.parse(jsonPayload);
+  } catch (err) {
+    console.error("Failed to parse JWT:", err);
+    return null;
   }
 }
 

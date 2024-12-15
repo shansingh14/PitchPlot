@@ -98,6 +98,28 @@ app.post(
   })
 );
 
+app.put("/api/users/:userId", async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const { bio, location } = req.body;
+
+  if (!bio && !location) {
+    res
+      .status(400)
+      .json({ error: "At least one field (bio or location) is required." });
+  }
+
+  try {
+    const updatedUser = await UserService.updateUser(userId, { bio, location });
+    if (!updatedUser) {
+      res.status(404).json({ error: "User not found." });
+    }
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ error: "Failed to update user information." });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

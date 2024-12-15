@@ -1,0 +1,53 @@
+.navbar {
+  background-color: var(--color-accent);
+  color: white;
+  padding: 10px 20px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 10;
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo h1 {
+  color: var(--color-background);
+  font-size: 24px;
+  margin: 0;
+}
+
+.nav-links a {
+  color: var(--color-background);
+  text-decoration: none;
+  font-size: 20px;
+  margin-left: 20px;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+.nav-links a.active {
+  font-weight: bold;
+}
+
+.dark-mode-toggle {
+  padding-right: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.dark-mode-toggle input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+.label {
+  margin-left: auto;
+  padding-right: 10px;
+  display: flex;
+  align-items: center;
+}

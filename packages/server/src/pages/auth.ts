@@ -22,7 +22,7 @@ export class LoginPage {
               <blz-header></blz-header>
               <main class="page">
                 <login-form api="/auth/login">
-                  <h3 slot="title">Sign in and go places!</h3>
+                  <h3 slot="title">Sign In!</h3>
                 </login-form>
                 <p class="register">
                   Or did you want to
